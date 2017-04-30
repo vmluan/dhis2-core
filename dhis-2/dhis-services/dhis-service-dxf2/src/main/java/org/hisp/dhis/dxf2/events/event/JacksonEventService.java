@@ -37,6 +37,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hisp.dhis.common.Grid;
 import org.hisp.dhis.dxf2.common.ImportOptions;
 import org.hisp.dhis.dxf2.importsummary.ImportSummaries;
 import org.hisp.dhis.program.ProgramStageInstance;
@@ -72,6 +73,11 @@ public class JacksonEventService extends AbstractEventService
     // -------------------------------------------------------------------------
 
     private final static ObjectMapper XML_MAPPER = new XmlMapper();
+
+    @Override
+    public Grid getEventsGrid(EventSearchParams params) {
+        return super.getEventsGrid(params);
+    }
 
     private final static ObjectMapper JSON_MAPPER = new ObjectMapper();
 
