@@ -11,11 +11,6 @@
     <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../javascripts/slick.js"></script-->
 
-    <script type="text/javascript" src="login.js"></script>
-
-    <link type="text/css" rel="stylesheet" href="../css/widgets.css">
-    <link type="text/css" rel="stylesheet" href="../css/login.css">
-    <link type="text/css" rel="stylesheet" href="../../api/files/style/external" />
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 
@@ -25,7 +20,11 @@
     <script type="text/javascript" src="../javascripts/slick.js"></script>
     <!--script type="text/javascript" src="../javascripts/bootstrap.min.js"></script-->
 
+    <script type="text/javascript" src="login.js"></script>
 
+    <link type="text/css" rel="stylesheet" href="../css/widgets.css">
+    <link type="text/css" rel="stylesheet" href="../css/login.css">
+    <link type="text/css" rel="stylesheet" href="../../api/files/style/external" />
 
 
     <style type="text/css">
@@ -174,7 +173,7 @@
                 slidesToShow: 6,
                 slidesToScroll: 1,
                 autoplay: true,
-                autoplaySpeed: 1000,
+                autoplaySpeed: 4000,
                 arrows: false,
                 dots: false,
                 pauseOnHover: false,
@@ -195,11 +194,11 @@
 </head>
 <body class="loginPage">
 <h1 style="display:none">$!encoder.htmlEncode( ${applicationTitle} )</h1>
-<div style="display:none">DHIS 2</div>
+<div style="display:none">Riddance DVT</div>
 <div>
     #if ( $keyFlag )
         <!--img id="flagArea" src="../flags/$!{keyFlagImage}"-->
-        <img id="" src="../img/horus_logo.jpg" style="/* width: 108px; */height: 72px;">
+        <img id="" src="../img/horus_logo.jpg" style="/* width: 108px; */height: 72px;padding: 5px;">
     #end
     #if ( $applicationTitle )
         <!--span id="titleArea">$!encoder.htmlEncode( ${applicationTitle} )</span-->
@@ -222,8 +221,8 @@
         <form id="loginForm" action="../../dhis-web-commons-security/login.action" method="post">
             <div>
                 <div id="signInLabel">Sign in</div>
-                <div><input type="text" id="j_username" name="j_username" placeholder="Username"></div>
-                <div><input type="password" id="j_password" name="j_password" autocomplete="off" placeholder="Password"></div>
+                <div><input type="text" id="j_username" name="j_username" placeholder="Username" style="color: black;"></div>
+                <div><input type="password" id="j_password" name="j_password" autocomplete="off" placeholder="Password" style="color: black;"></div>
             </div>
             <div id="submitDiv">
                 <input id="submit" class="button" type="submit" value="Sign in">
