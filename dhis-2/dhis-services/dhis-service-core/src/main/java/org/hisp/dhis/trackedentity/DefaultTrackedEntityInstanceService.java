@@ -45,6 +45,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.program.Program;
 import org.hisp.dhis.program.ProgramService;
+import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStatus;
 import org.hisp.dhis.relationship.Relationship;
 import org.hisp.dhis.relationship.RelationshipService;
@@ -61,13 +62,7 @@ import org.hisp.dhis.validation.ValidationCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.hisp.dhis.common.OrganisationUnitSelectionMode.ACCESSIBLE;
 import static org.hisp.dhis.common.OrganisationUnitSelectionMode.ALL;
@@ -182,7 +177,17 @@ public class DefaultTrackedEntityInstanceService
         {
             grid.addHeader( new GridHeader( item.getItem().getUid(), item.getItem().getName() ) );
         }
-
+        if(params.getProgram() != null
+                && params.getProgram().getProgramStages() != null
+                && params.getProgram().getProgramStages().size() > 0){
+            Iterator<ProgramStage> iterator = params.getProgram().getProgramStages().iterator();
+            int i=1;
+            while(iterator.hasNext()) {
+                ProgramStage programStage = iterator.next();
+                grid.addHeader(new GridHeader(PROGRAM_STAGE_TRACKED + i, programStage.getName()));
+                i++;
+            }
+        }
         List<Map<String, String>> entities = trackedEntityInstanceStore.getTrackedEntityInstancesGrid( params );
 
         // ---------------------------------------------------------------------
@@ -207,6 +212,18 @@ public class DefaultTrackedEntityInstanceService
             for ( QueryItem item : params.getAttributes() )
             {
                 grid.addValue( entity.get( item.getItemId() ) );
+            }
+
+            String stageOutput = entity.get(PROGRAM_STAGE_STATUS_OUTPUT);
+            if(params.getProgram() != null
+                    && params.getProgram().getProgramStages() != null
+                    && params.getProgram().getProgramStages().size() > 0){
+                String[] statuses = parseProgramStageStatus(stageOutput,params.getProgram().getProgramStages().size());
+                if(statuses != null){
+                    for(String data : statuses){
+                        grid.addValue(data);
+                    }
+                }
             }
         }
 
@@ -241,6 +258,24 @@ public class DefaultTrackedEntityInstanceService
         grid.setMetaData( metaData );
 
         return grid;
+    }
+
+    private String[] parseProgramStageStatus(String text, int size){
+        String output[] = new String[size];
+        StringTokenizer stringTokenizer = new StringTokenizer(text,",");
+        int i=0;
+        while(stringTokenizer.hasMoreElements()){
+            String data = (String)stringTokenizer.nextElement();
+            StringTokenizer stringTokenizer2 = new StringTokenizer(data,":");
+            while(stringTokenizer2.hasMoreElements()){
+                String data2 = (String)stringTokenizer2.nextElement();
+                String data3 = (String)stringTokenizer2.nextElement();
+                //System.out.println(data3);
+                output[i] = data3;
+                i++;
+            }
+        }
+        return output;
     }
 
     /**

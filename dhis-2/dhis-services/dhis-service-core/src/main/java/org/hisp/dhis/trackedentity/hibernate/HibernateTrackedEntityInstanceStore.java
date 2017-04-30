@@ -53,12 +53,7 @@ import org.hisp.dhis.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
 import static org.hisp.dhis.common.IdentifiableObjectUtils.getUids;
@@ -96,7 +91,7 @@ public class HibernateTrackedEntityInstanceStore
     @Override
     public int countTrackedEntityInstances( TrackedEntityInstanceQueryParams params )
     {
-        String hql = buildTrackedEntityInstanceCountHql( params );
+        String hql = buildTrackedEntityInstanceCountHql(params);
         Query query = getQuery( hql );
 
         return ((Number) query.iterate().next()).intValue();
@@ -106,7 +101,7 @@ public class HibernateTrackedEntityInstanceStore
     @SuppressWarnings( "unchecked" )
     public List<TrackedEntityInstance> getTrackedEntityInstances( TrackedEntityInstanceQueryParams params )
     {
-        String hql = buildTrackedEntityInstanceHql( params );
+        String hql = buildTrackedEntityInstanceHql(params);
         Query query = getQuery( hql );
 
         if ( params.isPaging() )
@@ -120,7 +115,7 @@ public class HibernateTrackedEntityInstanceStore
 
     private String buildTrackedEntityInstanceCountHql( TrackedEntityInstanceQueryParams params )
     {
-        return buildTrackedEntityInstanceHql( params ).replaceFirst( "select distinct tei from", "select count(distinct tei) from" );
+        return buildTrackedEntityInstanceHql( params ).replaceFirst("select distinct tei from", "select count(distinct tei) from");
     }
 
     private String buildTrackedEntityInstanceHql( TrackedEntityInstanceQueryParams params )
@@ -245,13 +240,17 @@ public class HibernateTrackedEntityInstanceStore
         // ---------------------------------------------------------------------
 
         String sql =
-            "select tei.uid as " + TRACKED_ENTITY_INSTANCE_ID + ", " +
+            "select distinct tei.uid as " + TRACKED_ENTITY_INSTANCE_ID + ", " +
                 "tei.created as " + CREATED_ID + ", " +
                 "tei.lastupdated as " + LAST_UPDATED_ID + ", " +
                 "ou.uid as " + ORG_UNIT_ID + ", " +
                 "ou.name as " + ORG_UNIT_NAME + ", " +
                 "te.uid as " + TRACKED_ENTITY_ID + ", " +
                 "tei.inactive as " + INACTIVE_ID + ", ";
+        sql += "psi.status as " + PROGRAM_STAGE_STATUS + ", ";
+        sql += "psi.uid as " + PROGRAM_STAGE_UID + ", ";
+        sql +="ps.sort_order, ";
+    //    sql += "ps.name as " + PROGRAM_STAGE_NAME + ", ";
 
         for ( QueryItem item : params.getAttributes() )
         {
@@ -268,13 +267,17 @@ public class HibernateTrackedEntityInstanceStore
         // From and where clause
         // ---------------------------------------------------------------------
 
-        sql += getFromWhereClause( params, hlp );
+       // sql += getFromWhereClause( params, hlp );
+        //Luan update
+        sql += getFromWhereClauseWithStages(params, hlp);
         
         // ---------------------------------------------------------------------
         // Order clause
         // ---------------------------------------------------------------------
         
         sql += getOrderClause( params );
+        String stageOrder = " ,ps.sort_order asc";
+        sql += stageOrder;
 
         // ---------------------------------------------------------------------
         // Paging clause
@@ -294,25 +297,54 @@ public class HibernateTrackedEntityInstanceStore
         log.debug( "Tracked entity instance query SQL: " + sql );
 
         List<Map<String, String>> list = new ArrayList<>();
+        TreeMap<String,String> treeMap = new TreeMap<String,String>();
+
 
         while ( rowSet.next() )
         {
-            final Map<String, String> map = new HashMap<>();
+            String trackedEntityId = rowSet.getString( TRACKED_ENTITY_ID);
+            String trackedEntityInstanceId = rowSet.getString( TRACKED_ENTITY_INSTANCE_ID);
+            String stageId = rowSet.getString( PROGRAM_STAGE_UID);
+            String stageStatus = rowSet.getString( PROGRAM_STAGE_STATUS);
+           // String stageName = rowSet.getString( PROGRAM_STAGE_NAME);
+            //String output = stageId + ":" + stageStatus + ":" + stageName;
+            String output = stageId + ":" + stageStatus;
+            if(treeMap.containsKey(trackedEntityInstanceId)){
+                Map<String, String> map = list.get(Integer.valueOf(treeMap.get(trackedEntityInstanceId)));
+                String currentStatus = map.get(PROGRAM_STAGE_STATUS_OUTPUT);
+                if(currentStatus == null){
+                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, output);
+                }else{
+                    currentStatus = currentStatus + "," + output;
+                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, currentStatus);
+                }
+                //map.put(PROGRAM_STAGE_STATUS_OUTPUT, )
+            }else{
+                final Map<String, String> map = new HashMap<>();
 
-            map.put( TRACKED_ENTITY_INSTANCE_ID, rowSet.getString( TRACKED_ENTITY_INSTANCE_ID ) );
-            map.put( CREATED_ID, rowSet.getString( CREATED_ID ) );
-            map.put( LAST_UPDATED_ID, rowSet.getString( LAST_UPDATED_ID ) );
-            map.put( ORG_UNIT_ID, rowSet.getString( ORG_UNIT_ID ) );
-            map.put( ORG_UNIT_NAME, rowSet.getString( ORG_UNIT_NAME ) );
-            map.put( TRACKED_ENTITY_ID, rowSet.getString( TRACKED_ENTITY_ID ) );
-            map.put( INACTIVE_ID, rowSet.getString( INACTIVE_ID ) );
+                map.put( TRACKED_ENTITY_INSTANCE_ID, trackedEntityInstanceId );
+                map.put( CREATED_ID, rowSet.getString( CREATED_ID ) );
+                map.put( LAST_UPDATED_ID, rowSet.getString( LAST_UPDATED_ID ) );
+                map.put( ORG_UNIT_ID, rowSet.getString( ORG_UNIT_ID ) );
+                map.put( ORG_UNIT_NAME, rowSet.getString( ORG_UNIT_NAME ) );
+                map.put( TRACKED_ENTITY_ID, trackedEntityId);
+                map.put(INACTIVE_ID, rowSet.getString( INACTIVE_ID ) );
 
-            for ( QueryItem item : params.getAttributes() )
-            {
-                map.put( item.getItemId(), rowSet.getString( item.getItemId() ) );
+                String currentStatus = map.get(PROGRAM_STAGE_STATUS_OUTPUT);
+                if(currentStatus == null){
+                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, output);
+                }else{
+                    currentStatus = currentStatus + "," + output;
+                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, currentStatus);
+                }
+
+                for ( QueryItem item : params.getAttributes() )
+                {
+                    map.put( item.getItemId(), rowSet.getString( item.getItemId() ) );
+                }
+                list.add( map );
+                treeMap.put(trackedEntityInstanceId,String.valueOf(list.size() -1));
             }
-
-            list.add( map );
         }
 
         return list;
@@ -411,7 +443,7 @@ public class HibernateTrackedEntityInstanceStore
 
             sql += hlp.whereAnd() + ouClause;
         }
-        else // SELECTED (default)        
+        else // SELECTED (default)
         {
             sql += hlp.whereAnd() + " tei.organisationunitid in ("
                 + getCommaDelimitedString( getIdentifiers( params.getOrganisationUnits() ) ) + ") ";
@@ -497,7 +529,157 @@ public class HibernateTrackedEntityInstanceStore
 
         return sql;
     }
-    
+
+    private String getFromWhereClauseWithStages( TrackedEntityInstanceQueryParams params, SqlHelper hlp )
+    {
+        final String regexp = statementBuilder.getRegexpMatch();
+        final String wordStart = statementBuilder.getRegexpWordStart();
+        final String wordEnd = statementBuilder.getRegexpWordEnd();
+        final String anyChar = "\\.*?";
+
+        String sql = "from trackedentityinstance tei "
+                + "inner join trackedentity te on tei.trackedentityid = te.trackedentityid "
+                + "inner join organisationunit ou on tei.organisationunitid = ou.organisationunitid ";
+        sql += "inner join programinstance pi on tei.trackedentityinstanceid=pi.trackedentityinstanceid ";
+        sql += "inner join programstageinstance psi on pi.programinstanceid=psi.programinstanceid ";
+        sql += "inner join programstage ps on psi.programstageid=ps.programstageid ";
+
+        for ( QueryItem item : params.getAttributesAndFilters() )
+        {
+            final String col = statementBuilder.columnQuote( item.getItemId() );
+
+            final String joinClause = item.hasFilter() ? "inner join" : "left join";
+
+            sql += joinClause + " " + "trackedentityattributevalue as " + col + " " + "on " + col
+                    + ".trackedentityinstanceid = tei.trackedentityinstanceid " + "and " + col
+                    + ".trackedentityattributeid = " + item.getItem().getId() + " ";
+
+            if ( !params.isOrQuery() && item.hasFilter() )
+            {
+                for ( QueryFilter filter : item.getFilters() )
+                {
+                    final String encodedFilter = statementBuilder.encode( filter.getFilter(), false );
+
+                    final String queryCol = item.isNumeric() ? (col + ".value") : "lower(" + col + ".value)";
+
+                    sql += "and " + queryCol + " " + filter.getSqlOperator() + " "
+                            + StringUtils.lowerCase( filter.getSqlFilter( encodedFilter ) ) + " ";
+                }
+            }
+        }
+
+        if ( params.hasTrackedEntity() )
+        {
+            sql += hlp.whereAnd() + " tei.trackedentityid = " + params.getTrackedEntity().getId() + " ";
+        }
+
+        params.handleOrganisationUnits();
+
+        if ( params.isOrganisationUnitMode( OrganisationUnitSelectionMode.ALL ) )
+        {
+            // No restriction
+        }
+        else if ( params.isOrganisationUnitMode( OrganisationUnitSelectionMode.DESCENDANTS ) )
+        {
+            String ouClause = " (";
+
+            SqlHelper orHlp = new SqlHelper( true );
+
+            for ( OrganisationUnit organisationUnit : params.getOrganisationUnits() )
+            {
+                ouClause += orHlp.or() + "ou.path like '" + organisationUnit.getPath() + "%'";
+            }
+
+            ouClause += ")";
+
+            sql += hlp.whereAnd() + ouClause;
+        }
+        else // SELECTED (default)
+        {
+            sql += hlp.whereAnd() + " tei.organisationunitid in ("
+                    + getCommaDelimitedString( getIdentifiers( params.getOrganisationUnits() ) ) + ") ";
+        }
+
+        if ( params.hasProgram() )
+        {
+            sql += hlp.whereAnd() + " exists (" + "select pi.trackedentityinstanceid " + "from programinstance pi ";
+
+            if ( params.hasEventStatus() )
+            {
+                sql += "left join programstageinstance psi " + "on pi.programinstanceid = psi.programinstanceid and psi.deleted is false ";
+            }
+
+            sql += "where pi.trackedentityinstanceid = tei.trackedentityinstanceid " + "and pi.programid = "
+                    + params.getProgram().getId() + " ";
+
+            if ( params.hasProgramStatus() )
+            {
+                sql += "and pi.status = '" + params.getProgramStatus() + "' ";
+            }
+
+            if ( params.hasFollowUp() )
+            {
+                sql += "and pi.followup = " + params.getFollowUp() + " ";
+            }
+
+            if ( params.hasProgramEnrollmentStartDate() )
+            {
+                sql += "and pi.enrollmentdate >= '" + getMediumDateString( params.getProgramEnrollmentStartDate() ) + "' ";
+            }
+
+            if ( params.hasProgramEnrollmentEndDate() )
+            {
+                sql += "and pi.enrollmentdate <= '" + getMediumDateString( params.getProgramEnrollmentEndDate() ) + "' ";
+            }
+
+            if ( params.hasProgramIncidentStartDate() )
+            {
+                sql += "and pi.incidentdate >= '" + getMediumDateString( params.getProgramIncidentStartDate() ) + "' ";
+            }
+
+            if ( params.hasProgramIncidentEndDate() )
+            {
+                sql += "and pi.incidentdate <= '" + getMediumDateString( params.getProgramIncidentEndDate() ) + "' ";
+            }
+
+            if ( params.hasEventStatus() )
+            {
+                sql += getEventStatusWhereClause( params );
+            }
+
+            sql += ") ";
+        }
+
+        if ( params.isOrQuery() && params.hasAttributesOrFilters() )
+        {
+            final String start = params.getQuery().isOperator( QueryOperator.LIKE ) ? anyChar : wordStart;
+            final String end = params.getQuery().isOperator( QueryOperator.LIKE ) ? anyChar : wordEnd;
+
+            sql += hlp.whereAnd() + " (";
+
+            List<String> queryTokens = getTokens( params.getQuery().getFilter() );
+
+            for ( String queryToken : queryTokens )
+            {
+                final String query = statementBuilder.encode( queryToken, false );
+
+                sql += "(";
+
+                for ( QueryItem item : params.getAttributesAndFilters() )
+                {
+                    final String col = statementBuilder.columnQuote( item.getItemId() );
+
+                    sql += col + ".value " + regexp + " '" + start + StringUtils.lowerCase( query ) + end + "' or ";
+                }
+
+                sql = removeLastOr( sql ) + ") and ";
+            }
+
+            sql = removeLastAnd( sql ) + ") ";
+        }
+
+        return sql;
+    }
     private String getOrderClause( TrackedEntityInstanceQueryParams params )
     {
         List<String> cols = getStaticGridColumns();
@@ -544,7 +726,7 @@ public class HibernateTrackedEntityInstanceStore
 
         return "order by lastUpdated desc ";
     }
-    
+
     private List<String> getStaticGridColumns(){
         
         return Arrays.asList( TRACKED_ENTITY_INSTANCE_ID, CREATED_ID, LAST_UPDATED_ID, ORG_UNIT_ID, ORG_UNIT_NAME, TRACKED_ENTITY_ID, INACTIVE_ID);

@@ -59,6 +59,14 @@
 
   <bean id="appCacheFilter" class="org.hisp.dhis.servlet.filter.AppCacheFilter" />
 
+
+  <!-- Luan added -->
+  <sec:http access-decision-manager-ref="accessDecisionManager"
+            authentication-manager-ref="authenticationManager" pattern="/dhis-web-commons/img/**" security="none" />
+  <sec:http access-decision-manager-ref="accessDecisionManager"
+            authentication-manager-ref="authenticationManager" pattern="/dhis-web-commons/bootstrap/css/**" security="none" />
+
+
   <sec:http access-decision-manager-ref="accessDecisionManager"
     authentication-manager-ref="authenticationManager" pattern="/dhis-web-commons/javascripts/**" security="none" />
   <sec:http access-decision-manager-ref="accessDecisionManager"
@@ -73,6 +81,7 @@
     authentication-manager-ref="authenticationManager" pattern="/external-static/**" security="none" />
   <sec:http access-decision-manager-ref="accessDecisionManager"
     authentication-manager-ref="authenticationManager" pattern="/favicon.ico" security="none" />
+
 
   <!-- Disabled for now, we need to properly handle "Basic Auth" dialog box popping up on browsers
   <sec:http access-decision-manager-ref="accessDecisionManager" use-expressions="true" realm="DHIS2" pattern="/api/**">
