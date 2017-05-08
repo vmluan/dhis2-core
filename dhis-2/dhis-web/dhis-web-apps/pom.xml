@@ -122,7 +122,7 @@
                   <artifactId>dhis-app-tracker-capture</artifactId>
                   <version>2.27-SNAPSHOT</version>
                   <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/${project.artifactId}/dhis-web-tracker-capture</outputDirectory>
+                  <outputDirectory>${project.build.directory}/${project.artifactId}/web-tracker-capture</outputDirectory>
                   <includes>**/*.*</includes>
                 </artifactItem>
                 <!-- Visualizer -->

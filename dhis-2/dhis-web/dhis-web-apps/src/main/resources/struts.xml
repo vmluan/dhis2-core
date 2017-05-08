@@ -83,7 +83,7 @@
         </action>
     </package>
 
-    <package name="dhis-web-tracker-capture" extends="dhis-web-commons" namespace="/dhis-web-tracker-capture">
+    <package name="web-tracker-capture" extends="dhis-web-commons" namespace="/web-tracker-capture">
         <action name="index" class="org.hisp.dhis.commons.action.NoAction">
             <result name="success" type="redirect">index.html</result>
         </action>

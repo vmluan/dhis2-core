@@ -110,7 +110,7 @@ public class UserKeyJsonValueController
      * Retrieves the value of the KeyJsonValue represented by the given key and namespace from
      * the current user.
      */
-    @RequestMapping( value = "/{namespace}/{key}", method = RequestMethod.GET, produces = "application/json" )
+    @RequestMapping( value = "/{namespace}/{key}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8" )
     public @ResponseBody String getUserKeyJsonValue(
         @PathVariable String namespace,
         @PathVariable String key )

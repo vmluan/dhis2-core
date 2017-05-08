@@ -154,7 +154,7 @@
     <sec:intercept-url pattern="/dhis-web-app-management/**" access="hasAnyRole('ALL,M_dhis-web-app-management')" />
     <sec:intercept-url pattern="/dhis-web-usage-analytics/**" access="hasAnyRole('ALL,M_dhis-web-usage-analytics')" />
     <sec:intercept-url pattern="/dhis-web-event-capture/**" access="hasAnyRole('ALL,M_dhis-web-event-capture')" />
-    <sec:intercept-url pattern="/dhis-web-tracker-capture/**" access="hasAnyRole('ALL,M_dhis-web-tracker-capture')" />
+    <sec:intercept-url pattern="/web-tracker-capture/**" access="hasAnyRole('ALL,M_web-tracker-capture')" />
     <sec:intercept-url pattern="/dhis-web-cache-cleaner/**" access="hasAnyRole('ALL,M_dhis-web-cache-cleaner')" />
 
     <sec:intercept-url pattern="/**" access="isAuthenticated()" />

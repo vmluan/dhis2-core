@@ -124,9 +124,9 @@
               <goal>validate</goal>
             </goals>
             <configuration>
-              <propertyDir>${project.basedir}/dhis-web/dhis-web-apps/src/main/webapp/dhis-web-tracker-capture/</propertyDir>
+              <propertyDir>${project.basedir}/dhis-web/dhis-web-apps/src/main/webapp/web-tracker-capture/</propertyDir>
               <ignoreFailure>true</ignoreFailure>
-              <reportsDir>${project.build.directory}/l10n-reports/dhis-web-tracker-capture</reportsDir>
+              <reportsDir>${project.build.directory}/l10n-reports/web-tracker-capture</reportsDir>
               <formatter>messageFormat</formatter>
             </configuration>
           </execution>

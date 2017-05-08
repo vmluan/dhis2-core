@@ -279,13 +279,21 @@ public class HibernateTrackedEntityInstanceStore
         String stageOrder = " ,ps.sort_order asc";
         sql += stageOrder;
 
+        int limitNbr = params.getPageSizeWithDefault();
+        int offsetNbr = params.getOffset();
+        if(params.getProgram() != null
+                && params.getProgram().getProgramStages() != null
+                && params.getProgram().getProgramStages().size() >0){
+            limitNbr = limitNbr * params.getProgram().getProgramStages().size();
+            offsetNbr = offsetNbr * params.getProgram().getProgramStages().size();
+        }
         // ---------------------------------------------------------------------
         // Paging clause
         // ---------------------------------------------------------------------
 
         if ( params.isPaging() )
         {
-            sql += " limit " + params.getPageSizeWithDefault() + " offset " + params.getOffset();
+            sql += " limit " + limitNbr + " offset " + offsetNbr;
         }
 
         // ---------------------------------------------------------------------
