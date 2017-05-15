@@ -249,6 +249,7 @@ public class HibernateTrackedEntityInstanceStore
                 "tei.inactive as " + INACTIVE_ID + ", ";
         sql += "psi.status as " + PROGRAM_STAGE_STATUS + ", ";
         sql += "psi.uid as " + PROGRAM_STAGE_UID + ", ";
+        sql += "pi.status as " + "programinstancestatus" + ", ";
         sql +="ps.sort_order, ";
     //    sql += "ps.name as " + PROGRAM_STAGE_NAME + ", ";
 
@@ -314,17 +315,20 @@ public class HibernateTrackedEntityInstanceStore
             String trackedEntityInstanceId = rowSet.getString( TRACKED_ENTITY_INSTANCE_ID);
             String stageId = rowSet.getString( PROGRAM_STAGE_UID);
             String stageStatus = rowSet.getString( PROGRAM_STAGE_STATUS);
+            String programInstanceStatus = rowSet.getString( "programinstancestatus");
            // String stageName = rowSet.getString( PROGRAM_STAGE_NAME);
             //String output = stageId + ":" + stageStatus + ":" + stageName;
             String output = stageId + ":" + stageStatus;
             if(treeMap.containsKey(trackedEntityInstanceId)){
                 Map<String, String> map = list.get(Integer.valueOf(treeMap.get(trackedEntityInstanceId)));
                 String currentStatus = map.get(PROGRAM_STAGE_STATUS_OUTPUT);
-                if(currentStatus == null){
-                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, output);
-                }else{
-                    currentStatus = currentStatus + "," + output;
-                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, currentStatus);
+                if (programInstanceStatus != null && !programInstanceStatus.equalsIgnoreCase("CANCELLED")) { // do not care status of Canceled status
+                    if (currentStatus == null) {
+                        map.put(PROGRAM_STAGE_STATUS_OUTPUT, output);
+                    } else {
+                        currentStatus = currentStatus + "," + output;
+                        map.put(PROGRAM_STAGE_STATUS_OUTPUT, currentStatus);
+                    }
                 }
                 //map.put(PROGRAM_STAGE_STATUS_OUTPUT, )
             }else{
@@ -339,11 +343,13 @@ public class HibernateTrackedEntityInstanceStore
                 map.put(INACTIVE_ID, rowSet.getString( INACTIVE_ID ) );
 
                 String currentStatus = map.get(PROGRAM_STAGE_STATUS_OUTPUT);
-                if(currentStatus == null){
-                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, output);
-                }else{
-                    currentStatus = currentStatus + "," + output;
-                    map.put(PROGRAM_STAGE_STATUS_OUTPUT, currentStatus);
+                if (programInstanceStatus != null && !programInstanceStatus.equalsIgnoreCase("CANCELLED")) { // do not care status of Canceled status
+                    if (currentStatus == null) {
+                        map.put(PROGRAM_STAGE_STATUS_OUTPUT, output);
+                    } else {
+                        currentStatus = currentStatus + "," + output;
+                        map.put(PROGRAM_STAGE_STATUS_OUTPUT, currentStatus);
+                    }
                 }
 
                 for ( QueryItem item : params.getAttributes() )

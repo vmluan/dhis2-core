@@ -28,6 +28,7 @@ package org.hisp.dhis.trackedentity;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hisp.dhis.common.DimensionalObject;
@@ -261,7 +262,11 @@ public class DefaultTrackedEntityInstanceService
     }
 
     private String[] parseProgramStageStatus(String text, int size){
-        String output[] = new String[size];
+        if(text == null){
+            return new String[size];
+        }
+        int count = StringUtils.countMatches(text, ",") + 1;
+        String output[] = new String[count > size ? count : size];
         StringTokenizer stringTokenizer = new StringTokenizer(text,",");
         int i=0;
         while(stringTokenizer.hasMoreElements()){
