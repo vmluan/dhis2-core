@@ -515,7 +515,24 @@ public abstract class AbstractTrackedEntityInstanceService
                 attributeValue.setEntityInstance( entityInstance );
                 attributeValue.setValue( attribute.getValue() );
                 attributeValue.setAttribute( entityAttribute );
-
+                //update for special attribute that include total number of inserted trackedEntityInstance in it value Example: VN00038 when there are 38 records inserted
+                //check special attribute
+                if(attributeValue.getAttribute() != null
+                        && attributeValue.getAttribute().getAggregationType() != null
+                        && !attributeValue.getAttribute().getAggregationType().name().equalsIgnoreCase("NONE")){
+                    TrackedEntityInstanceQueryParams params = new TrackedEntityInstanceQueryParams();
+                    OrganisationUnit organisationUnit = entityInstance.getOrganisationUnit();
+                    while(organisationUnit.getParent() != null
+                            && organisationUnit.getParent().getParent() != null){ // to get first level except the root site.
+                        organisationUnit = organisationUnit.getParent();
+                    }
+                    Set<OrganisationUnit> organisationUnits = new HashSet<OrganisationUnit>();
+                    organisationUnits.add(organisationUnit);
+                    params.setOrganisationUnits(organisationUnits);
+                    int count = teiService.getTrackedEntityInstanceCount( params );
+                    String formattedCnt = String.format("%05d", count);
+                    attributeValue.setValue(organisationUnit.getCode() + "_" + formattedCnt);
+                }
                 trackedEntityAttributeValueService.addTrackedEntityAttributeValue( attributeValue );
             }
         }
