@@ -169,21 +169,15 @@
                             <li>
                                 <a href="#heading">Heading</a>
                             </li>
-                            <li>
-                                <a href="#enrollment">Enrollment</a>
-                            </li>
+                            
                             <li>
                                 <a href="#timeline">Timeline Data Entry</a>
                             </li>
+
                             <li>
-                                <a href="#feedback">Feedback</a>
+                                <a href="#profile">Profile</a>
                             </li>
-                            <li>
-                                <a href="#relationship">Relationships</a>
-                            </li>
-                            <li>
-                                <a href="#report">Report</a>
-                            </li>
+                           
                             <li>
                                 <a href="#note">Notes</a>
                             </li>
@@ -199,9 +193,9 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <div class="row">
+                <div class="row" id="introduce">
                     <div class="col-sm-12">
-                        <h2 class="page-header" id="introduce">
+                        <h2 class="page-header">
                             Hướng dẫn sử dụng website Riddance DVT
                         </h2>
                          <!-- Main jumbotron for a primary marketing message or call to action -->
@@ -209,6 +203,7 @@
                             <h3>Xin Chào</h3>
                             <p>Nội dung trang này là để hướng dẫn chi tiết về cách sử dụng Riddance DVT để nhập liệu. Giải thích về các buttons, links, stage, section... được hiển thị trên website.<br>
                             Vui lòng click vào từng link ở menu bên trái để đi tới hướng dẫn từng phần hoặc scroll down chuột xuống cuối trang. </p>
+                            <div id="use_dashboard"></div>
                         </div>
 
                     </div>
@@ -227,40 +222,49 @@
                 <div class="row" >
                     <div class="col-sm-12">
                    <!--      </div> -->
-                        <div class="panel panel-primary" id="use_dashboard">
+                        <div class="panel panel-primary">
                             <div class="panel-heading" >
                                 <h3 class="panel-title" >Sử dụng Dashboard</h3>
                             </div>
                             <div class="panel-body" >
                                 Nội dung chi tiết. Menu gồm các thành phần sau:
                                 <ul>  
-                                  <li><!-- <img src="./picture/search.jpg" style="width: 150px; height:25px; "> --><!-- Nhập từ khoá vào để search các chương trình tương ứng -->  
-                                  Để tìm kiếm các ứng dụng trong chương trình, bạn nhập tên chương trình đó: <br>
-                                  <img src="./picture/app_search.jpg" style="margin: 10px; " > <br>
-                                  Hoặc bạn có thể click vào nút "app" trên thanh menu để hiển thị tất cả ứng dụng/chức năng hiện có như: <br>
-                                  <img src="./picture/app_1.jpg" style="margin: 10px;">
+                                  <li> 
+                                      Để tìm kiếm các ứng dụng trong chương trình, bạn nhập tên chương trình đó: <br>
+                                      <img src="./picture/app_search.jpg" style="margin: 10px; " > <br>
+                                      Hoặc bạn có thể click vào nút "app" trên thanh menu để hiển thị tất cả ứng dụng/chức năng hiện có như: <br>
+                                      <img src="./picture/app_1.jpg" style="margin: 10px;">
                                   </li> <br>
 
                                   <li>Click vào biểu tượng "profile" trên thanh menu để sử dụng các chức năng sẵn có cho user đang đăng nhập như: <br>
                                     <img src="./picture/account.jpg" style="margin: 10px;">
                                   </li>
-                                </ul>                                 
+
+                                  <div id="list_patient"></div>
+                                </ul> 
+
                             </div>
                         </div>
+
                     </div>
                 </div>
+
                 <!-- /.col-sm-12 -->
 
                 <!--Màn hình danh sách bệnh nhân-->
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="panel panel-primary" id="list_patient">
+                        <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Danh sách bệnh nhân</h3>
                             </div>
                             <div class="panel-body">
                                 Nội dung chi tiết:
                                 <ul>
+                                    <li> Danh sách khoa tham giam nghiên cứu của bệnh viên.<br>
+                                        <img src="./picture/faculties.png" style="margin: 10px;">
+
+                                    </li>
                                     <li> Chọn chương trình nghiên cứu. <br>
                                         <img src="./picture/1.jpg" style="margin: 10px;">
                                     </li>
@@ -277,23 +281,24 @@
                                   
                                                 <li><img src="./picture/3.jpg" style="width: 150px; height:25px; ">: Với số lượng bệnh nhân lớn, sẽ có sự phân trang, nếu muốn đi tới trang nào thì chỉ cần nhập số trang đó vào rồi enter thì sẽ tới trang đó.</li>
 
-                                                <li>Trong bảng danh sách bệnh nhân sẽ hiển thị các cột với các thông tin của bệnh nhân tham gia nghiên cứu như : đơn vị đăng kí, ngày đăng kí, tên nghiên cứu viên, tên và mã bệnh nhân, các stages trong nghiên cứu. <br>
-                                                Nếu bệnh nhân đã hoàn thành stages nào đó thì trên bảng danh sách sẽ hiển thị <img src="./picture/tick.jpg">, còn nếu chưa hoàn thành thì sẽ hiển thị <img src="./picture/x.jpg">. 
+                                                <li>
+                                                    <p>Trong bảng danh sách bệnh nhân sẽ hiển thị các cột với các thông tin của bệnh nhân tham gia nghiên cứu như : Trung tâm nghiên cứu, Mã HSBA, Tên bệnh nhân, Mã bệnh nhân và các giai đoạn trong nghiên cứu. </p>
+                                                    <p>Nếu bệnh nhân đã hoàn thành stages nào đó thì trên bảng danh sách sẽ hiển thị <img src="./picture/tick.jpg">,còn nếu chưa hoàn thành hay chưa thực hiện lần nghiên cứu đó thì sẽ hiển thị <img src="./picture/overdue.png">. </p>
                                                 </li>
 
-                                                <li>Icon <button class="btn btn-default" type="button"><i class="fa fa-table"></i></button>: Khi click vào đây, có thể chọn hiển thị hoặc ẩn các cột trong bảng danh sách bệnh nhân.</li>
+                                                <li>Icon <button class="btn btn-default" type="button" style="margin: 5px; "><i class="fa fa-table"></i></button>: Khi click vào đây, có thể chọn hiển thị hoặc ẩn các cột trong bảng danh sách bệnh nhân.</li>
                                   
-                                                <li>Icon <button class="btn btn-default" type="button"><i class="fa fa-download"></i></button>: Khi click vào icon này, bạn có thể download file xuống với lựa chọn định dạng khác nhau như: XML, JSON, CSV </li>
+                                                <li>Icon <button class="btn btn-default" type="button" style="margin: 5px; "><i class="fa fa-download"></i></button>: Khi click vào icon này, bạn có thể download file xuống với lựa chọn định dạng khác nhau như: EXCEL, XML, JSON, CSV.</li>
                                               
-                                                <li>Icon <button class="btn btn-default" type="button"><i class="fa fa-calendar-o mouse-pointer"></i></button>: Khi click vào icon này, bảng danh sách chỉ hiển thị những bệnh nhân có sự kiện trong ngày hôm đó </li>
+                                                <li>Icon <button class="btn btn-default" type="button" style="margin: 5px; "><i class="fa fa-calendar-o mouse-pointer"></i></button>: Khi click vào icon này, bảng danh sách chỉ hiển thị những bệnh nhân có sự kiện trong ngày hôm đó </li>
                                               
-                                                <li>Icon <button class="btn btn-default" type="button"><i class="fa fa-list mouse-pointer"></i></button>: Với icon này, danh sách sẽ được hiển thị đầy đủ tất cả bệnh nhân đăng kí tham gia nghiên cứu</li>
+                                                <li>Icon <button class="btn btn-default" type="button" style="margin: 5px; "><i class="fa fa-list mouse-pointer"></i></button>: Với icon này, danh sách sẽ được hiển thị đầy đủ tất cả bệnh nhân đăng kí tham gia nghiên cứu</li>
                                               
-                                                <li>Icon <button class="btn btn-default" type="button"><i class="fa fa-circle-o mouse-pointer"></i></button>: Khi click vào icon này, danh sách chỉ hiển thị những bệnh nhân có hoạt động....</li>
+                                                <li>Icon <button class="btn btn-default" type="button" style="margin: 5px; "><i class="fa fa-circle-o mouse-pointer"></i></button>: Khi click vào icon này, danh sách chỉ hiển thị những bệnh nhân có hoạt động....</li>
                                               
-                                                <li>Icon <button class="btn btn-default" type="button"><i class="fa fa-check mouse-pointer"></i></button>: Với icon này, danh sách sẽ hiển thị tất cả bệnh nhân đã hoàn thành nghiên cứu. </li>
+                                                <li>Icon <button class="btn btn-default" type="button" style="margin: 5px; "><i class="fa fa-check mouse-pointer"></i></button>: Với icon này, danh sách sẽ hiển thị tất cả bệnh nhân đã hoàn thành nghiên cứu. </li>
                                               
-                                                <li>Icon <button class="btn btn-default" type="button"><i class="fa fa-times mouse-pointer"></i></button>: Với icon này, danh sách sẽ chỉ hiển thị những bệnh nhân đã xóa ra khỏi nghiên cứu. </li>
+                                               
                                             </ul>
                                     </li>
                                   
@@ -313,7 +318,7 @@
                                             <button type="button" class="btn btn-info">Print form</button>: Click vào button này, sẽ print ra file đăng kí tham gia nghiên cứu.
                                         </li>
                                         <li style="margin: 5px 0;">
-                                             <button type="button" class="btn btn-default small-horizontal-spacing ng-binding">Cancel</button>: Hủy bỏ đăng kí form tham gia nghiên cứu.
+                                             <button type="button" class="btn btn-default small-horizontal-spacing ng-binding">Cancel</button>: Hủy bỏ đăng kí form tham gia nghiên cứu. Form đăng ký khi đang có dữ liệu nhập mà có thao tác hủy thì sẽ có 1 thông báo xác nhận lại việc hủy bỏ của form đăng ký này.
                                         </li>
    
                                       </ul>
@@ -330,76 +335,40 @@
                 <!-- Màn hình chi tiết tiếp nhận bệnh nhân -->
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="panel panel-primary" >
+                        <div id="heading"></div>
+                        <div class="panel panel-primary">
                             <div class="panel-heading" id="detail_patient">
-                                <h3 class="panel-title">Hướng dẫn phần chi tiết bệnh nhân</h3>
+                                <h3 class="panel-title" >Hướng dẫn phần chi tiết bệnh nhân</h3>
                             </div>
+
                             <div class="panel-body">
-                                <b id="heading">Heading </b>
+                                <b>Heading </b>
                                     <ul>
-                                      <li>Button <button type="button" class="btn btn-default ng-binding" style="height: 35px;">Back</button>: Click vào nút button này thì bệnh nhân sẽ quay trở lại trang "Danh sách bệnh nhân".</li>
+                                      <li>Button <button type="button" class="btn btn-default ng-binding" style="margin: 5px;">Back to Home</button>: Click vào nút button này thì bệnh nhân sẽ quay trở lại trang "Danh sách bệnh nhân".</li>
 
-                                      <li>Button <button type="button" class="btn btn-default small-horizontal-spacing"><i class="fa fa-caret-left"></i></button>: Click vào nút button này thì sẽ quay lại bệnh nhân đứng trước bệnh nhân hiện tại</li>
+                                      <li>Button <button type="button" class="btn btn-default small-horizontal-spacing" style="margin: 5px;"><i class="fa fa-caret-left"></i></button>: Click vào nút button này thì sẽ quay lại bệnh nhân đứng trước bệnh nhân hiện tại</li>
 
-                                      <li>Button <button type="button" class="btn btn-default small-horizontal-spacing">
+                                      <li>Button <button type="button" class="btn btn-default small-horizontal-spacing" style="margin: 5px;">
                                                 <i class="fa fa-caret-right"></i></button>: Click vào nút button này thì sẽ đi tiếp tới bệnh nhân đứng sau bệnh nhân hiện tại</li>
 
-                                      <li>ComboList <img src="./picture/rid.jpg" style="width: 150px; height:30px;">: Click vào đây, hiển thị danh sách các chương trình hiện có, chọn hoặc nhập tìm chương trình cần làm.</li>
+                                      <li> Để hiển thị danh sách các chương trình hiện có, chọn hoặc nhập tìm chương trình nghiên cứu:<br>
+                                            <img src="./picture/rid_selected.jpg" style="margin: 10px;" >
+                                      </li>
+
+                                      <div  id="timeline"></div> 
 
                                       <li>Button <button type="button" class="btn btn-default unstick"> 
-                                                <i class="fa fa-thumb-tack"></i> </button>: Click vào nút này, sẽ ghim bệnh nhân hiện tại đang làm... 
+                                                <i class="fa fa-thumb-tack"></i> </button>: Update later
                                                 </li>
 
-                                      <li>Button <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-exclamation-circle"> </i>
-                                            </button>: Click chọn "Deactivate Bệnh nhân" là thao tác hủy bỏ bệnh nhân hiện tại đang làm; còn click chọn "Delete Bệnh nhân" là xóa bệnh nhân ra khỏi danh sách bệnh nhân thuộc chương trình đang chọn.
-                                            </li>
-
-                                      <li>Button <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-cog"></i> 
-                                            </button>: Khi click vào button này, sẽ hiển thị ra 2 mục, nếu Click chọn "Show/hide widgets" là thao tác hiển thị hoặc ẩn widgets; Click chọn "Save dashboard layout as default" là thao tác lưu bố cục dashboard làm mặc định.
-                                            </li>
                                     </ul>
 
-                                <b id="enrollment">Enrollment </b><br>
-                                    <img src="./picture/Enrollment.jpg" style="margin: 10px;">
-                                    <p>Trong đó: </p>  
-                                    <ul>
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
-
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-cog"></i></button> để hiện thị ra </li>
-
-                                        <li>Textboxt <img src="./picture/5.jpg">: Bổ sung sau</li>
-                                        
-                                        <li>Textboxt <img src="./picture/6.jpg">: Bổ sung sau</li>
-                                        
-                                        <li>Textboxt <img src="./picture/7.jpg">: Bổ sung sau</li>
-
-                                        <li>Button <button type="button" class="btn btn-primary"> Complete </button>: Bổ sung sau
-                                        </li>
-
-                                        <li>Button <button type="button" class="btn btn-warning"> Deactivate </button>: Bổ sung sau</li>
-
-                                        <li>Button <button type="button" class="btn ng-scope btn-default">
-                                            <i class="fa fa-exclamation-triangle"></i></button>: 
-                                            Bổ sung sau</li>
-
-                                        <li>Button <button type="button" class="btn btn-danger">
-                                            Delete </button>: Bổ sung sau</li>
-                                    </ul> 
-
-                                <b id="indicator">Indicators </b><br>
-                                    <img src="./picture/Indicators.jpg" style="margin: 10px;">
-                                    <p>Trong đó: </p>
-                                    <ul>
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
-
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle"> <i class="fa fa-cog"></i></button> để hiện thị ra </li>
-                                    </ul>
-
-                                <b id="timeline">Timeline Data Entry</b><br> 
+                                <b>Timeline Data Entry</b><br> 
                                     <img src="./picture/TimeLine.jpg" style="margin: 10px;">
                                     <p>Trong đó: </p>
                                     <ul>
-                                        <li>Icon <i class="fa fa-info-circle vertical-center"></i>: Click vào icon này, bảng hướng dẫn màu sắc sẽ hiển thị trong các stage và section.</li>
+                                        <li>Icon <i class="fa fa-info-circle vertical-center"></i>: Click vào icon này, hiển thị bảng giải thích màu sắc sẽ hiển thị trên các stage và section trong nghên cứu.<br>
+                                        <img src="./picture/legend_color.jpg" style="margin: 10px;"></li>
 
                                         <li>Icon <i class="glyphicon glyphicon-user"></i>: Click vào icon này, hiển thị ra bảng các data elements đã làm như bên dưới: <br>
                                             <img src="./picture/AuditHistory.jpg" style="margin: 10px; float: center;">
@@ -409,41 +378,40 @@
                                         
                                                 <li>Đóng phần Audit History lại: <button type="button" class="btn btn-default">Close</button> </li> 
                                             </ul>
+                                        </li>  
+
+                                        <li>Icon <button style="margin: 5px;"><i class="glyphicon glyphicon-save vertical-center"></i></button>: Cho phép bạn tải về file "enrollment_detail.xlsx" với các thông tin đầy đủ.</li>
+
+                                        <li>Icon <button style="margin: 5px;"><i class="fa fa-search vertical-center"></i></button>: Click vào icon này thì sẽ hiển thị một textfield để bạn tìm kiếm data element hay giai đoạn trong nghiên cứu,...</li>
+
+                                        <li>Icon <button style="margin: 5px;"><i class="fa fa-chevron-up"></i></button>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
+
+                                        <!-- <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle"> <i class="fa fa-cog"></i></button> để hiện thị ra </li> -->
+
+                                        <li>Có 5 stages chính được hiển thị như hình bên dưới: <br>
+                                            <img src="./picture/Stage_5.jpg" style="margin: 15px 0;"><br>
+                                            <p>Với màu sắc của mỗi stage sẽ được định nghĩa như sau:</p>
+                                            <img src="./picture/legend_color.jpg" style="margin: 10px;">
+
                                         </li>
 
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
-
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle"> <i class="fa fa-cog"></i></button> để hiện thị ra </li>
-
-                                        <li>Có 4 stages chính: Các stages chưa làm nhưng đã có ngày report date sẽ hiển thị màu hồng nhạt, với stage nào đã hoàn thành thì màu của stage đó sẽ hiển thị màu xanh lạt, còn stage chưa chọn ngày report date được hiển thị màu xanh với chữ hiển thị là "scheduled" <br>
-                                            <img src="./picture/stages_1.jpg" style="margin: 15px 0;">
-                                        </li>
-
-                                        <li>Đối với mỗi stage sẽ có một ngày report date khác nhau, ví dụ: <br> 
+                                        <li>Đối với mỗi stage sẽ có một ngày khám khác nhau với ngày khám phải đúng theo mỗi stage, ví dụ: <br> 
                                         <img src="./picture/report_date.jpg" style="margin: 15px 0;">
                                         </li>
-
-                                        <!-- <li>Textbox "Due date": Tự động cập nhập ngày vào làm báo cáo, không cho chỉnh sửa ngày.</li> -->
-
-                                        <li>Với các section có số lượng data elements nhiều thì sẽ có phân trang và mặc định 1 trang là 20 data elements, nếu muốn thay đổi số lượng data elements trên 1 trang thì nhập một con số khác vào.<br> <img src="./picture/row_section.jpg">:
-                                         </li>
-                                        
+   
                                         <li> 
                                             Click chọn section để nhập thông tin cho các data elements: <br>
-                                            <img src="./picture/section.jpg" style="width: 800px; height: 450px; "> <br>
+                                            <img src="./picture/Section_Detail.jpg" style="margin: 10px;"> <br>
                                             <!-- <img src="./picture/text.jpg"><br> -->
-                                            Trong section với những data elements phải nhập liệu thì sau khi nhập liệu xong, ấn phím "tab" trên bàn phím để lưu lại thông tin đã nhập, ô nhập liệu sẽ chuyển sang màu xanh như ví dụ bên dưới: <br>
-                                            <img src="./picture/text_1.jpg">
+                                            <p>Trong section với những data elements phải nhập liệu thì sau khi nhập liệu xong, ấn phím <span style="font-weight: bold;">"Tab"</span> trên bàn phím để lưu lại thông tin đã nhập, ô nhập liệu sẽ chuyển sang màu xanh như ví dụ bên dưới:</p>
+                                            <img src="./picture/text_1.jpg" style="margin: 10px;">
                                         </li><br>
                                         
-                                        <li>Sau khi nhấn nút <button class="btn btn-warning" style="margin: 10px 0;"> Complete</button> để hoàn thành section đang làm sẽ có một form comfirm cho việc hoàn thành section đó: <br>
+                                        <li>Sau khi nhấn nút <button class="btn btn-warning" style="margin: 10px 0;"> Hoàn thành lần khám</button> để hoàn thành section đang làm sẽ có một form comfirm cho việc hoàn thành section đó: <br>
                                             <img src="./picture/complete_form.jpg">
                                           </li><br>
-                                        <!-- <li>Button <button class="btn btn-warning ng-binding ng-scope"> Complete</button>: Bổ sung sau. 
-                                        </li> -->
-
-                                        <!-- Button <button class="btn btn-warning ng-binding ng-scope"> Incomplete</button>: Bổ sung sau. -->
-                                        <li>Với các section đã hoàn thành mà cần chỉnh sửa lại thông tin đã nhập thì nhấn nút <button class="btn btn-warning" style="margin: 10px 0;"> Incomplete</button> để edit lại. Khi đó sẽ xuất hiện một form comfirm lại như sau:<br>
+                                       
+                                        <li>Với các section đã hoàn thành mà cần chỉnh sửa lại thông tin đã nhập thì nhấn nút <button class="btn btn-warning" style="margin: 10px 0;"> Nhập lại lần khám</button> để edit lại. Khi đó sẽ xuất hiện một form comfirm lại như sau:<br>
                                         <img src="./picture/incomplete_form.jpg"><br>
                                         Nếu muốn tiếp tục edit thì nhấn vào nút <button class="btn btn-primary" style="margin: 5px 0;">OK</button> để tiếp tục hoặc nếu không muốn tiếp tục thì nhấn nút <button class="btn btn-default" style="margin: 5px 0;">Cancel</button> để hủy việc edit lại. 
                                         </li>
@@ -456,76 +424,41 @@
 
                                                 <li>Sau khi nhập xong notes, click vào button này để add notes lại: <button type="button" class="btn btn-primary"> Add </button> </li>
 
-                                                <li>Button <button type="button" class="btn btn-default"> Clear
-                                                    </button>: Bổ sung sau.</li>
+                                                <li>Xóa phần đang nhập ghi chú hiện tại để tạo ghi chú mới hoặc không muốn ghi chú nữa thì có thể click vào <button type="button" class="btn btn-default" id="profile"> Clear
+                                                    </button> button</li>
                                             </ul> 
                                         </li>
                                     </ul> 
 
-                                <b id="feedback">Feedback </b><br>
-                                    <img src="./picture/Feedback.jpg" style="margin: 10px 20px;">
-                                    <ul>
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
-                                        
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-cog"></i></button> để hiện thị ra </li>
-                                    </ul> 
 
-                                <b id="profile">Profile | Edit </b><br>
+                                <b>Profile | Edit </b><br>
                                     <img src="./picture/Profile_Detail.jpg" style="margin: 10px;">
                                     <p>Trong đó: </p>
                                     <ul>
-                                        <li><img src="./picture/profile_edit.jpg">: Thay đổi thông tin: tên nghiên cứu viên, tên bệnh nhân, mã bệnh nhân.</li>
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
+                                       <!--  <li><img src="./picture/profile_edit.jpg">: Cho phép thay đổi thông tin: Mã bệnh nhân, Tên bệnh nhân, Mã hồ sơ bệnh án.</li> -->
+                                        <li>Icon <button style="margin: 5px;"><i class="fa fa-chevron-up"></i></button>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
 
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button "setting" để hiện thi ra </li>
+                                        <!-- <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button "setting" để hiện thi ra </li> -->
                                         
-                                        <li>Icon <i class="glyphicon glyphicon-user"></i>: Click vào icon này, hiển thị ra bảng các data elements đã click</li>
+                                        <li>Icon <button style="margin: 5px;"><i class="glyphicon glyphicon-user"></i></button>: Click vào icon này, hiển thị ra bảng thông tin bệnh nhân hiện tại đã click</li>
                                         
-                                        <li> Nhập tìm data elements muốn xem đã làm hay chưa. <br>
+                                        <!-- <li> Nhập tìm thông tin muốn xem đã làm hay chưa. <br>
                                             <img src="./picture/search_data.jpg">
-                                        </li>
+                                        </li> -->
                                         
-                                        <li>Đóng phần Audit History lại:  <button type="button" class="btn btn-default">Close</button></li>
+                                        <li >Đóng phần Audit History lại:  <button type="button" class="btn btn-default">Close</button></li>
                                     </ul> 
-                                
-                                <b id="relationship">Relationships | Add </b> <br>
-                                    <img src="./picture/Relationship.jpg" style="margin: 10px;">
-                                    <p>Trong đó: </p>
-                                    <ul>
-                                        <li><img src="./picture/relationship_add.jpg">: Thêm mối quan hệ. <br>
-                                            <img src="./picture/Add_Relationship.jpg" style="margin: 10px; width: 700px; ">
-                                        </li>
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
-                                        
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-cog"></i></button> để hiện thị ra </li>
-                                    </ul> 
-
-                                <b id="report">Report</b> <br>
-                                  <!--   <img src="./picture/Report.jpg" style="margin: 10px;"> -->
-                                    <ul>
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết như bên dưới. <br>
-                                            <img src="./picture/Report_detail.jpg" style="margin: 10px;">
-                                        </li>
-                                        
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-cog"></i></button> để hiện thị ra </li>
-                                    </ul> 
-
+                                 
                                 <b id="note">Notes</b><br>
                                     <img src="./picture/Notes_Detail.jpg" style="margin: 10px;">
                                     <p>Trong đó: </p>
                                     <ul>
-                                        <li>Icon <i class="fa fa-chevron-up"></i>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
-                                        
-                                        <li>Icon <i class="fa fa-times-circle"></i>: Không hiển thị section này trên trang, nếu muốn hiển thị phần này ra thì vào Button <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-cog"></i></button> để hiện thị ra </li>
-                                        
-                                        <li>Nhập ghi chú cần thiết: <br>
-                                            <img src="./picture/notes.jpg" style="margin: 10px;">
-                                        </li>
+                                        <li>Icon <button><i class="fa fa-chevron-up"></i></button>: Click vào icon này thì nội dung sẽ được thu gọn hoặc hiển thị chi tiết.</li>
 
                                         <li>Sau khi nhập xong notes, click vào button này để add notes lại: <button type="button" class="btn btn-primary"> Add </button> </li>
 
-                                        <li>Button <button type="button" class="btn btn-default"> Clear
-                                            </button>: Bổ sung sau.</li>
+                                                <li>Xóa phần đang nhập ghi chú hiện tại để tạo ghi chú mới hoặc không muốn ghi chú nữa thì có thể click vào nút <button type="button" class="btn btn-default"> Clear
+                                                    </button></li>
                                     </ul>                              
                             </div>
                         </div>

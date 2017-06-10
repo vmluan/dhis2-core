@@ -851,6 +851,8 @@ public abstract class AbstractEventService
         else if ( event.getStatus() == EventStatus.SCHEDULE )
         {
             programStageInstance.setStatus( EventStatus.SCHEDULE );
+        } else if(event.getStatus() == EventStatus.REVIEWED ){
+            programStageInstance.setStatus( EventStatus.REVIEWED );
         }
 
         programStageInstance.setDueDate( dueDate );

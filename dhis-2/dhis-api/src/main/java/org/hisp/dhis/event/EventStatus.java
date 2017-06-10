@@ -42,7 +42,8 @@ public enum EventStatus
     VISITED( 2 ),
     SCHEDULE( 3 ),
     OVERDUE( 4 ),
-    SKIPPED( 5 );
+    SKIPPED( 5 ),
+    REVIEWED( 6 );
 
     private final int value;
 
