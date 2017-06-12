@@ -225,14 +225,17 @@ public class JdbcEventStore
                 && isNewDataValue( rowSet, event.getDataValues() ) )
             {
                 DataValue dataValue = new DataValue();
-                dataValue.setCreated( DateUtils.getIso8601NoTz( rowSet.getDate( "pdv_created" ) ) );
-                dataValue.setLastUpdated( DateUtils.getIso8601NoTz( rowSet.getDate( "pdv_lastupdated" ) ) );
-                dataValue.setValue( rowSet.getString( "pdv_value" ) );
-                dataValue.setProvidedElsewhere( rowSet.getBoolean( "pdv_providedelsewhere" ) );
-                dataValue.setDataElement( IdSchemes.getValue( rowSet.getString( "de_uid" ),
-                    rowSet.getString( "de_code" ), idSchemes.getDataElementIdScheme() ) );
+                dataValue.setCreated(DateUtils.getIso8601NoTz(rowSet.getDate("pdv_created")));
+                dataValue.setLastUpdated(DateUtils.getIso8601NoTz(rowSet.getDate("pdv_lastupdated")));
+                dataValue.setValue(rowSet.getString("pdv_value"));
+                dataValue.setProvidedElsewhere(rowSet.getBoolean("pdv_providedelsewhere"));
+                dataValue.setDataElement(IdSchemes.getValue(rowSet.getString("de_uid"),
+                        rowSet.getString("de_code"), idSchemes.getDataElementIdScheme()));
 
-                dataValue.setStoredBy( rowSet.getString( "pdv_storedby" ) );
+                dataValue.setStoredBy(rowSet.getString("pdv_storedby"));
+
+                String dataElementId = rowSet.getString("dataelementid");
+                getDataElementNotes(dataValue,dataElementId);
 
                 event.getDataValues().add( dataValue );
             }
@@ -250,6 +253,35 @@ public class JdbcEventStore
         }
 
         return events;
+    }
+    /*
+    *** Method is to get trackedentitydatavaluecomments and assign to DataValue.
+     */
+    private void getDataElementNotes(DataValue dataValue, String dataElementid){
+        /*select co.trackedentitycommentid, co.commenttext, co.createddate, co.creator, co.replyto
+        from trackedentitydatavaluecomments dv
+        inner join trackedentitycomment co
+        on dv.trackedentitycommentid = co.trackedentitycommentid
+        where dv.dataelementid = 7472;
+        */
+        String sql = "select co.trackedentitycommentid, co.commenttext, co.createddate, co.creator, co.replyto"
+                    + " from trackedentitydatavaluecomments dv "
+                    + " inner join trackedentitycomment co "
+                    + " on dv.trackedentitycommentid = co.trackedentitycommentid "
+                    + " where dv.dataelementid =  " + dataElementid + "; ";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet( sql );
+        List<Note> notes = new ArrayList<Note>();
+        while ( rowSet.next() )
+        {
+            Note note = new Note();
+            note.setValue(rowSet.getString("commenttext"));
+            note.setStoredBy(rowSet.getString("creator"));
+            note.setReplyTo(rowSet.getString("replyto"));
+            note.setStoredDate(rowSet.getString("createddate"));
+            notes.add(note);
+        }
+        dataValue.setNotes(notes);
+
     }
 
     @Override
@@ -390,9 +422,9 @@ public class JdbcEventStore
                 eventRows.add( eventRow );
             }
 
-            if ( rowSet.getString( "pav_value" ) != null && rowSet.getString( "ta_uid" ) != null )
+            if ( rowSet.getString("pav_value" ) != null && rowSet.getString( "ta_uid" ) != null )
             {
-                String valueType = rowSet.getString( "ta_valuetype" );
+                String valueType = rowSet.getString("ta_valuetype" );
 
                 Attribute attribute = new Attribute();
                 attribute.setCreated( DateUtils.getIso8601NoTz( rowSet.getDate( "pav_created" ) ) );
@@ -754,7 +786,7 @@ public class JdbcEventStore
     {
         String sql = "select pdv.programstageinstanceid as pdv_id, pdv.created as pdv_created, pdv.lastupdated as pdv_lastupdated, "
             + "pdv.value as pdv_value, pdv.storedby as pdv_storedby, pdv.providedelsewhere as pdv_providedelsewhere, "
-            + "de.uid as de_uid, de.code as de_code " + "from trackedentitydatavalue pdv "
+            + "de.uid as de_uid, de.code as de_code,de.dataelementid as dataelementid " + "from trackedentitydatavalue pdv "
             + "inner join dataelement de on pdv.dataelementid=de.dataelementid ";
 
         return sql;
