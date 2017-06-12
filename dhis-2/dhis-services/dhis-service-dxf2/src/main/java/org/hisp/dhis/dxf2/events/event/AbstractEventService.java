@@ -922,7 +922,23 @@ public abstract class AbstractEventService
                     fileResourceService.deleteFileResource( dataValue.getValue() );
                 }
 
-                dataValue.setValue( value.getValue() );
+                dataValue.setValue(value.getValue());
+
+                List<TrackedEntityComment> comments = dataValue.getComments();
+                if(comments == null){
+                    comments = new ArrayList<TrackedEntityComment>();
+                }
+                for ( Note note : value.getNotes() )
+                {
+                    TrackedEntityComment comment = new TrackedEntityComment();
+                    comment.setCreator(storedBy);
+                    comment.setCreatedDate(new Date());
+                    comment.setCommentText(note.getValue());
+                    comment.setReplyTo(Integer.valueOf(note.getReplyTo()));
+                    comments.add(comment);
+
+                }
+               // dataValue.setComments(comments); // Luan - should have comments here
                 dataValue.setProvidedElsewhere( value.getProvidedElsewhere() );
                 dataValueService.updateTrackedEntityDataValue( dataValue );
 

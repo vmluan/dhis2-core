@@ -42,6 +42,8 @@ public class Note
 
     private String storedDate;
 
+    private String replyTo;
+
     public Note()
     {
     }
@@ -80,5 +82,15 @@ public class Note
     public void setStoredDate( String storedDate )
     {
         this.storedDate = storedDate;
+    }
+
+    @JsonProperty
+    @JacksonXmlProperty( isAttribute = true )
+    public String getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(String replyTo) {
+        this.replyTo = replyTo;
     }
 }

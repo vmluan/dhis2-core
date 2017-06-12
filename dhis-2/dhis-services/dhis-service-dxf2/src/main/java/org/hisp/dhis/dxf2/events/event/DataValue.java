@@ -33,6 +33,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.hisp.dhis.common.DxfNamespaces;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Morten Olav Hansen <mortenoh@gmail.com>
  */
@@ -50,6 +53,8 @@ public class DataValue
     private Boolean providedElsewhere = false;
 
     private String storedBy;
+
+    private List<Note> notes = new ArrayList<>();
 
     public DataValue()
     {
@@ -131,6 +136,14 @@ public class DataValue
     public void setStoredBy( String storedBy )
     {
         this.storedBy = storedBy;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
     @Override

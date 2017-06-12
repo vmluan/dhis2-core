@@ -862,7 +862,7 @@ public class EventController
         if ( order != null && !StringUtils.isEmpty( order ) )
         {
 
-            return Arrays.asList( order.split( "," ) );
+            return Arrays.asList(order.split(","));
         }
 
         return null;
@@ -901,7 +901,7 @@ public class EventController
 
         if( programStageInstanceIdScheme != null )
         {
-            idSchemes.setProgramStageInstanceIdScheme( programStageInstanceIdScheme );
+            idSchemes.setProgramStageInstanceIdScheme(programStageInstanceIdScheme);
         }
 
         return idSchemes;
@@ -912,4 +912,32 @@ public class EventController
         return  params.get( key ) != null ? params.get( key ).get( 0 ) : null;
     }
 
+    /*
+    Luan added for Horus
+     */
+    @RequestMapping( value = "/{uid}/{dataElementUid}/note", method = RequestMethod.PUT, consumes = "application/json" )
+    @PreAuthorize( "hasRole('ALL') or hasRole('F_TRACKED_ENTITY_DATAVALUE_ADD')" )
+    public void putJsonTrackedDataValueNote( HttpServletResponse response, HttpServletRequest request,
+                                         @PathVariable( "uid" ) String uid, @PathVariable( "dataElementUid" ) String dataElementUid ) throws IOException, WebMessageException
+    {
+        if ( !programStageInstanceService.programStageInstanceExists( uid ) )
+        {
+            throw new WebMessageException( WebMessageUtils.notFound( "Event not found for ID " + uid ) );
+        }
+
+        DataElement dataElement = dataElementService.getDataElement( dataElementUid );
+
+        if ( dataElement == null )
+        {
+            throw new WebMessageException( WebMessageUtils.notFound( "DataElement not found for ID " + dataElementUid ) );
+        }
+
+        InputStream inputStream = StreamUtils.wrapAndCheckCompressionFormat( request.getInputStream() );
+        Event updatedEvent = renderService.fromJson( inputStream, Event.class );
+        updatedEvent.setEvent( uid );
+
+        /*ImportSummary importSummary = eventService.updateEvent( updatedEvent, true );*/
+
+        //webMessageService.send( WebMessageUtils.importSummary( importSummary ), response, request );
+    }
 }

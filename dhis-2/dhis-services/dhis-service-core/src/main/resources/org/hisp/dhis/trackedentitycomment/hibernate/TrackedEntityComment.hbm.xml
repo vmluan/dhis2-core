@@ -15,6 +15,7 @@
     <property name="createdDate" column="createddate"/>
 	
 	<property name="creator" column="creator"/>
+    <property name="replyTo" column="replyTo"/>
 	 
   </class>
 </hibernate-mapping>

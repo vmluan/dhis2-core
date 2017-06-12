@@ -32,9 +32,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.hisp.dhis.common.DxfNamespaces;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.program.ProgramStageInstance;
+import org.hisp.dhis.trackedentitycomment.TrackedEntityComment;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Abyot Asalefew Gizaw
@@ -61,6 +64,8 @@ public class TrackedEntityDataValue
     private Boolean providedElsewhere = false;
 
     private String storedBy;
+
+    private List<TrackedEntityComment> comments = new ArrayList<>();
 
     // -------------------------------------------------------------------------
     // Transient properties
@@ -255,4 +260,13 @@ public class TrackedEntityDataValue
     {
         return auditValue;
     }
+
+    public List<TrackedEntityComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<TrackedEntityComment> comments) {
+        this.comments = comments;
+    }
 }
+

@@ -23,5 +23,16 @@
 
     <property name="storedBy" column="storedby" />
 
+    <list name="comments" table="trackedentitydatavaluecomments" cascade="all-delete-orphan">
+      <key>
+        <column name="dataelementid"/>
+        <column name="programstageinstanceid"/>
+      </key>
+      <list-index column="sort_order" base="1" />
+      <many-to-many class="org.hisp.dhis.trackedentitycomment.TrackedEntityComment" column="trackedentitycommentid"
+                    unique="true" foreign-key="fk_trackedentitydatavaluecomments_trackedentitycommentid" />
+    </list>
+
+
   </class>
 </hibernate-mapping>

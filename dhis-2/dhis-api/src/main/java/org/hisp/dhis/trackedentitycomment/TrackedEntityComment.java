@@ -49,6 +49,8 @@ public class TrackedEntityComment
 
     private String creator;
 
+    private Integer replyTo;
+
     // -------------------------------------------------------------------------
     // Constructor
     // -------------------------------------------------------------------------
@@ -56,12 +58,18 @@ public class TrackedEntityComment
     public TrackedEntityComment()
     {
     }
-
-    public TrackedEntityComment( String commentText, String creator, Date createdDate )
+    public TrackedEntityComment( String commentText, String creator, Date createdDate)
     {
         this.commentText = commentText;
         this.creator = creator;
         this.createdDate = createdDate;
+    }
+    public TrackedEntityComment( String commentText, String creator, Date createdDate, Integer replyTo )
+    {
+        this.commentText = commentText;
+        this.creator = creator;
+        this.createdDate = createdDate;
+        this.replyTo = replyTo;
     }
 
     //TODO implement hashCode and equals
@@ -114,5 +122,16 @@ public class TrackedEntityComment
     public void setCreator( String creator )
     {
         this.creator = creator;
+    }
+
+
+    @JsonProperty
+    @JacksonXmlProperty(namespace = DxfNamespaces.DXF_2_0)
+    public Integer getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(Integer replyTo) {
+        this.replyTo = replyTo;
     }
 }
