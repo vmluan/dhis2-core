@@ -472,7 +472,7 @@ public abstract class AbstractEventService
 
         List<Event> eventList = eventStore.getEvents( params, organisationUnits );
 
-        events.setEvents( eventList );
+        events.setEvents(eventList);
 
         return events;
     }
@@ -851,8 +851,10 @@ public abstract class AbstractEventService
         else if ( event.getStatus() == EventStatus.SCHEDULE )
         {
             programStageInstance.setStatus( EventStatus.SCHEDULE );
-        } else if(event.getStatus() == EventStatus.REVIEWED ){
-            programStageInstance.setStatus( EventStatus.REVIEWED );
+        } else if(event.getStatus() == EventStatus.VERIFIED){
+            programStageInstance.setStatus( EventStatus.VERIFIED);
+        } else if(event.getStatus() == EventStatus.LOCKED){
+            programStageInstance.setStatus( EventStatus.LOCKED);
         }
 
         programStageInstance.setDueDate( dueDate );

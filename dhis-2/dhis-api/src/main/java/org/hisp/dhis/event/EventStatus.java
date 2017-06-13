@@ -43,7 +43,8 @@ public enum EventStatus
     SCHEDULE( 3 ),
     OVERDUE( 4 ),
     SKIPPED( 5 ),
-    REVIEWED( 6 );
+    VERIFIED( 6 ),
+    LOCKED( 7 );
 
     private final int value;
 

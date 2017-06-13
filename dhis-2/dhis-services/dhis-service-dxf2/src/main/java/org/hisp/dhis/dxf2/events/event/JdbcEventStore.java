@@ -41,6 +41,7 @@ import org.hisp.dhis.commons.util.SqlHelper;
 import org.hisp.dhis.dxf2.events.enrollment.EnrollmentStatus;
 import org.hisp.dhis.dxf2.events.report.EventRow;
 import org.hisp.dhis.dxf2.events.trackedentity.Attribute;
+import org.hisp.dhis.dxf2.events.trackedentity.TrackedEntityCommentStore;
 import org.hisp.dhis.event.EventStatus;
 import org.hisp.dhis.jdbc.StatementBuilder;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -48,6 +49,7 @@ import org.hisp.dhis.program.ProgramStatus;
 import org.hisp.dhis.program.ProgramType;
 import org.hisp.dhis.query.Order;
 import org.hisp.dhis.system.util.DateUtils;
+import org.hisp.dhis.trackedentitycomment.TrackedEntityComment;
 import org.hisp.dhis.util.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -88,12 +90,18 @@ public class JdbcEventStore
         .put( "lastUpdated", "psi_lastupdated" ).put( "completedBy", "psi_completedby" )
         .put( "attributeOptionCombo", "psi_aoc" ).put( "completedDate", "psi_completeddate" ).build();
 
+    private static final String childrenNoteSql = "select co.trackedentitycommentid, co.commenttext, co.createddate, co.creator, co.replyto"
+            + " from trackedentitycomment co"
+            + " where replyTo = " ;
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
 
     @Autowired
     private StatementBuilder statementBuilder;
+
+    @Autowired
+    private TrackedEntityCommentStore trackedEntityCommentStore;
 
     @Resource( name = "readOnlyJdbcTemplate" )
     private JdbcTemplate jdbcTemplate;
@@ -121,7 +129,7 @@ public class JdbcEventStore
 
         Set<String> notes = new HashSet<>();
 
-        IdSchemes idSchemes = ObjectUtils.firstNonNull( params.getIdSchemes(), new IdSchemes() );
+        IdSchemes idSchemes = ObjectUtils.firstNonNull(params.getIdSchemes(), new IdSchemes());
 
         while ( rowSet.next() )
         {
@@ -235,7 +243,8 @@ public class JdbcEventStore
                 dataValue.setStoredBy(rowSet.getString("pdv_storedby"));
 
                 String dataElementId = rowSet.getString("dataelementid");
-                getDataElementNotes(dataValue,dataElementId);
+                String programStageInstanceId = rowSet.getString("pdv_id");
+                getDataElementNotes(dataValue,dataElementId,programStageInstanceId);
 
                 event.getDataValues().add( dataValue );
             }
@@ -254,33 +263,50 @@ public class JdbcEventStore
 
         return events;
     }
+    private Note buildNote(SqlRowSet rowSet){
+
+        Note note = new Note();
+        note.setNoteId(rowSet.getString("trackedentitycommentid"));
+        note.setValue(rowSet.getString("commenttext"));
+        note.setStoredBy(rowSet.getString("creator"));
+        note.setReplyTo(rowSet.getString("replyto"));
+        note.setStoredDate(rowSet.getString("createddate"));
+        if(note.getReplyTo() != null && Integer.valueOf(note.getReplyTo()) >0){
+            note.setChildren(buildChildrenNotes(note.getReplyTo()));
+        }
+        return note;
+    }
+    private List<Note> buildChildrenNotes(String replyTo){
+        String querySql = childrenNoteSql + " " + replyTo;
+        List<Note> childrenNotes = new ArrayList<Note>();
+        SqlRowSet rowSetChild = jdbcTemplate.queryForRowSet( querySql );
+        while (rowSetChild.next()){
+            Note child = buildNote(rowSetChild);
+            childrenNotes.add(child);
+        }
+        return childrenNotes;
+    }
     /*
     *** Method is to get trackedentitydatavaluecomments and assign to DataValue.
      */
-    private void getDataElementNotes(DataValue dataValue, String dataElementid){
-        /*select co.trackedentitycommentid, co.commenttext, co.createddate, co.creator, co.replyto
-        from trackedentitydatavaluecomments dv
-        inner join trackedentitycomment co
-        on dv.trackedentitycommentid = co.trackedentitycommentid
-        where dv.dataelementid = 7472;
-        */
-        String sql = "select co.trackedentitycommentid, co.commenttext, co.createddate, co.creator, co.replyto"
-                    + " from trackedentitydatavaluecomments dv "
-                    + " inner join trackedentitycomment co "
-                    + " on dv.trackedentitycommentid = co.trackedentitycommentid "
-                    + " where dv.dataelementid =  " + dataElementid + "; ";
+    private void getDataElementNotes(DataValue dataValue, String dataElementid,String programStageInstanceId){
+        String sql = "select co.trackedentitycommentid, co.commenttext, co.createddate, co.creator, co.replyto "
+                + " from (select * from trackedentitydatavaluecomments "
+                + " where dataelementid =  " + dataElementid
+                + " and programstageinstanceid = " + programStageInstanceId + ") dv "
+                + " inner join trackedentitycomment co "
+                + " on dv.trackedentitycommentid = co.trackedentitycommentid; " ;
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet( sql );
         List<Note> notes = new ArrayList<Note>();
         while ( rowSet.next() )
         {
-            Note note = new Note();
-            note.setValue(rowSet.getString("commenttext"));
-            note.setStoredBy(rowSet.getString("creator"));
-            note.setReplyTo(rowSet.getString("replyto"));
-            note.setStoredDate(rowSet.getString("createddate"));
+            Note note = buildNote(rowSet);
             notes.add(note);
+            //TrackedEntityComment trackedEntityComment = trackedEntityCommentStore.get(rowSet.getInt("trackedentitycommentid"));
+            //System.out.println("=================== completed");
         }
         dataValue.setNotes(notes);
+
 
     }
 
@@ -422,9 +448,9 @@ public class JdbcEventStore
                 eventRows.add( eventRow );
             }
 
-            if ( rowSet.getString("pav_value" ) != null && rowSet.getString( "ta_uid" ) != null )
+            if ( rowSet.getString("pav_value") != null && rowSet.getString( "ta_uid" ) != null )
             {
-                String valueType = rowSet.getString("ta_valuetype" );
+                String valueType = rowSet.getString("ta_valuetype");
 
                 Attribute attribute = new Attribute();
                 attribute.setCreated( DateUtils.getIso8601NoTz( rowSet.getDate( "pav_created" ) ) );
@@ -440,14 +466,14 @@ public class JdbcEventStore
             if ( rowSet.getString( "pdv_value" ) != null && rowSet.getString( "de_uid" ) != null )
             {
                 DataValue dataValue = new DataValue();
-                dataValue.setCreated( DateUtils.getIso8601NoTz( rowSet.getDate( "pdv_created" ) ) );
-                dataValue.setLastUpdated( DateUtils.getIso8601NoTz( rowSet.getDate( "pdv_lastupdated" ) ) );
-                dataValue.setValue( rowSet.getString( "pdv_value" ) );
-                dataValue.setProvidedElsewhere( rowSet.getBoolean( "pdv_providedelsewhere" ) );
-                dataValue.setDataElement( IdSchemes.getValue( rowSet.getString( "de_uid" ),
-                    rowSet.getString( "de_code" ), idSchemes.getDataElementIdScheme() ) );
+                dataValue.setCreated(DateUtils.getIso8601NoTz(rowSet.getDate("pdv_created")));
+                dataValue.setLastUpdated(DateUtils.getIso8601NoTz(rowSet.getDate("pdv_lastupdated")));
+                dataValue.setValue(rowSet.getString("pdv_value"));
+                dataValue.setProvidedElsewhere(rowSet.getBoolean("pdv_providedelsewhere"));
+                dataValue.setDataElement(IdSchemes.getValue(rowSet.getString("de_uid"),
+                        rowSet.getString("de_code"), idSchemes.getDataElementIdScheme()));
 
-                dataValue.setStoredBy( rowSet.getString( "pdv_storedby" ) );
+                dataValue.setStoredBy(rowSet.getString("pdv_storedby"));
 
                 eventRow.getDataValues().add( dataValue );
             }

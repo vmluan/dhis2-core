@@ -130,4 +130,13 @@
 
   <bean id="org.hisp.dhis.dxf2.AdxDataService" class="org.hisp.dhis.dxf2.adx.DefaultAdxDataService" />
 
+  <bean id="org.hisp.dhis.dxf2.events.trackedentity.TrackedEntityCommentStore"
+        class="org.hisp.dhis.dxf2.events.trackedentity.HibernateTrackedEntityCommentStore">
+    <property name="clazz" value="org.hisp.dhis.trackedentitycomment.TrackedEntityComment" />
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="jdbcTemplate" ref="jdbcTemplate" />
+    <property name="cacheable" value="true" />
+  </bean>
+
+
 </beans>

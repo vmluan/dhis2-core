@@ -915,29 +915,18 @@ public class EventController
     /*
     Luan added for Horus
      */
-    @RequestMapping( value = "/{uid}/{dataElementUid}/note", method = RequestMethod.PUT, consumes = "application/json" )
-    @PreAuthorize( "hasRole('ALL') or hasRole('F_TRACKED_ENTITY_DATAVALUE_ADD')" )
-    public void putJsonTrackedDataValueNote( HttpServletResponse response, HttpServletRequest request,
+    @RequestMapping( value = "/{uid}/{dataElementUid}/verify", method = RequestMethod.PUT, consumes = "application/json" )
+    @PreAuthorize( "hasRole('ALL') or hasRole('F_VERIFY_PROGRAM_STAGE')" )
+    public void verifyProgramStage( HttpServletResponse response, HttpServletRequest request,
                                          @PathVariable( "uid" ) String uid, @PathVariable( "dataElementUid" ) String dataElementUid ) throws IOException, WebMessageException
     {
-        if ( !programStageInstanceService.programStageInstanceExists( uid ) )
-        {
-            throw new WebMessageException( WebMessageUtils.notFound( "Event not found for ID " + uid ) );
-        }
 
-        DataElement dataElement = dataElementService.getDataElement( dataElementUid );
+    }
+    @RequestMapping( value = "/{uid}/{dataElementUid}/lock", method = RequestMethod.PUT, consumes = "application/json" )
+    @PreAuthorize( "hasRole('ALL') or hasRole('F_LOCK_PROGRAM_STAGE')" )
+    public void lockProgramStage( HttpServletResponse response, HttpServletRequest request,
+                                             @PathVariable( "uid" ) String uid, @PathVariable( "dataElementUid" ) String dataElementUid ) throws IOException, WebMessageException
+    {
 
-        if ( dataElement == null )
-        {
-            throw new WebMessageException( WebMessageUtils.notFound( "DataElement not found for ID " + dataElementUid ) );
-        }
-
-        InputStream inputStream = StreamUtils.wrapAndCheckCompressionFormat( request.getInputStream() );
-        Event updatedEvent = renderService.fromJson( inputStream, Event.class );
-        updatedEvent.setEvent( uid );
-
-        /*ImportSummary importSummary = eventService.updateEvent( updatedEvent, true );*/
-
-        //webMessageService.send( WebMessageUtils.importSummary( importSummary ), response, request );
     }
 }

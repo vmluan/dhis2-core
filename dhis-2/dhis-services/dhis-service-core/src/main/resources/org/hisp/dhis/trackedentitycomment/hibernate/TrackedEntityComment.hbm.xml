@@ -15,7 +15,15 @@
     <property name="createdDate" column="createddate"/>
 	
 	<property name="creator" column="creator"/>
-    <property name="replyTo" column="replyTo"/>
-	 
+    <!--property name="replyTo" column="replyTo"/-->
+
+    <set name="children" inverse="true">
+      <cache usage="read-write" />
+      <key column="replyTo" />
+      <one-to-many class="org.hisp.dhis.trackedentitycomment.TrackedEntityComment" />
+    </set>
+    <many-to-one name="parent" class="org.hisp.dhis.trackedentitycomment.TrackedEntityComment" column="replyTo"
+                 foreign-key="fk_replyTo" index="in_replyTo" />
+
   </class>
 </hibernate-mapping>

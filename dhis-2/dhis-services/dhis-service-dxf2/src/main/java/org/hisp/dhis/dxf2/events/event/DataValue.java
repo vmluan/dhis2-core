@@ -138,6 +138,8 @@ public class DataValue
         this.storedBy = storedBy;
     }
 
+    @JsonProperty
+    @JacksonXmlProperty( isAttribute = true )
     public List<Note> getNotes() {
         return notes;
     }

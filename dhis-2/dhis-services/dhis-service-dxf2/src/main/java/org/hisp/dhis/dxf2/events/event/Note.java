@@ -33,6 +33,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.hisp.dhis.common.DxfNamespaces;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @JacksonXmlRootElement( localName = "note", namespace = DxfNamespaces.DXF_2_0 )
 public class Note
 {
@@ -43,6 +48,11 @@ public class Note
     private String storedDate;
 
     private String replyTo;
+
+    private String noteId;
+
+    private List<Note> children = new ArrayList<>();
+    private Note parent;
 
     public Note()
     {
@@ -92,5 +102,34 @@ public class Note
 
     public void setReplyTo(String replyTo) {
         this.replyTo = replyTo;
+    }
+
+    @JsonProperty
+    @JacksonXmlProperty( isAttribute = true )
+    public String getNoteId() {
+        return noteId;
+    }
+
+    public void setNoteId(String noteId) {
+        this.noteId = noteId;
+    }
+
+    @JsonProperty
+    @JacksonXmlProperty( isAttribute = true )
+    public List<Note> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Note> children) {
+        this.children = children;
+    }
+    @JsonProperty
+    @JacksonXmlProperty( isAttribute = true )
+    public Note getParent() {
+        return parent;
+    }
+
+    public void setParent(Note parent) {
+        this.parent = parent;
     }
 }

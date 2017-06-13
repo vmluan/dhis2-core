@@ -118,7 +118,7 @@ public class OrganisationUnitController
             }
             else
             {
-                objects = organisationUnitService.getOrganisationUnitsAtLevel( 1 );
+                objects = OrganisationUnitStore.getOrganisationUnitsAtLevel( 1 );
             }
         }
         else if ( options.isTrue( "levelSorted" ) )

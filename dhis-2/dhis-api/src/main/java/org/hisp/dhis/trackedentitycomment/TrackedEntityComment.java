@@ -29,17 +29,23 @@ package org.hisp.dhis.trackedentitycomment;
  */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import org.hisp.dhis.common.BaseDimensionalItemObject;
+import org.hisp.dhis.common.BaseIdentifiableObject;
 import org.hisp.dhis.common.DxfNamespaces;
+import org.hisp.dhis.common.adapter.JacksonTrackedEntityCommentChildrenSerializer;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * @author Chau Thu Tran
  */
 @JacksonXmlRootElement(localName = "trackedEntityComment", namespace = DxfNamespaces.DXF_2_0)
-public class TrackedEntityComment
+public class TrackedEntityComment extends BaseDimensionalItemObject
 {
     private int id;
 
@@ -50,6 +56,10 @@ public class TrackedEntityComment
     private String creator;
 
     private Integer replyTo;
+
+    private Set<TrackedEntityComment> children;
+
+    private TrackedEntityComment parent;
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -133,5 +143,33 @@ public class TrackedEntityComment
 
     public void setReplyTo(Integer replyTo) {
         this.replyTo = replyTo;
+    }
+
+    @JsonProperty
+    @JsonSerialize( contentUsing = JacksonTrackedEntityCommentChildrenSerializer.class )
+    @JacksonXmlElementWrapper( localName = "children", namespace = DxfNamespaces.DXF_2_0 )
+    @JacksonXmlProperty( localName = "child", namespace = DxfNamespaces.DXF_2_0 )
+    public Set<TrackedEntityComment> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<TrackedEntityComment> children) {
+        this.children = children;
+    }
+
+    @JsonProperty
+    @JsonSerialize( as = BaseIdentifiableObject.class )
+    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
+    public TrackedEntityComment getParent() {
+        return parent;
+    }
+
+    public void setParent(TrackedEntityComment parent) {
+        this.parent = parent;
+    }
+
+    public boolean hasChild()
+    {
+        return !this.children.isEmpty();
     }
 }
