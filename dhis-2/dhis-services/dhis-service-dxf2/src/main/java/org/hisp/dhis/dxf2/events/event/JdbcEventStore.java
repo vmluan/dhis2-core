@@ -271,13 +271,13 @@ public class JdbcEventStore
         note.setStoredBy(rowSet.getString("creator"));
         note.setReplyTo(rowSet.getString("replyto"));
         note.setStoredDate(rowSet.getString("createddate"));
-        if(note.getReplyTo() != null && Integer.valueOf(note.getReplyTo()) >0){
-            note.setChildren(buildChildrenNotes(note.getReplyTo()));
+        if(note.getNoteId() != null && Integer.valueOf(note.getNoteId()) >0){
+            note.setChildren(buildChildrenNotes(note.getNoteId()));
         }
         return note;
     }
-    private List<Note> buildChildrenNotes(String replyTo){
-        String querySql = childrenNoteSql + " " + replyTo;
+    private List<Note> buildChildrenNotes(String noteId){
+        String querySql = childrenNoteSql + " " + noteId;
         List<Note> childrenNotes = new ArrayList<Note>();
         SqlRowSet rowSetChild = jdbcTemplate.queryForRowSet( querySql );
         while (rowSetChild.next()){
