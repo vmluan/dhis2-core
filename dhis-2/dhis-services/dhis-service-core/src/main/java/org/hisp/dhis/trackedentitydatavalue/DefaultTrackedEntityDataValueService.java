@@ -133,9 +133,10 @@ public class DefaultTrackedEntityDataValueService
             {
                 throw new IllegalQueryException( "Value is not valid:  " + result );
             }
-
-            createAndAddAudit( trackedEntityDataValue, trackedEntityDataValue.getStoredBy(), AuditType.UPDATE );
-            handleFileDataValueUpdate( trackedEntityDataValue );
+            if(!trackedEntityDataValue.isUpdatingNoteOnly()) { // do not audit in case updating comments.
+                createAndAddAudit(trackedEntityDataValue, trackedEntityDataValue.getStoredBy(), AuditType.UPDATE);
+                handleFileDataValueUpdate(trackedEntityDataValue);
+            }
 
             dataValueStore.update( trackedEntityDataValue );
         }

@@ -34,6 +34,7 @@ import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.program.ProgramStageInstance;
 import org.hisp.dhis.trackedentitycomment.TrackedEntityComment;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,6 +67,8 @@ public class TrackedEntityDataValue
     private String storedBy;
 
     private List<TrackedEntityComment> comments = new ArrayList<>();
+
+    private boolean isUpdatingNoteOnly = false;
 
     // -------------------------------------------------------------------------
     // Transient properties
@@ -267,6 +270,15 @@ public class TrackedEntityDataValue
 
     public void setComments(List<TrackedEntityComment> comments) {
         this.comments = comments;
+    }
+
+    @Transient
+    public boolean isUpdatingNoteOnly() {
+        return isUpdatingNoteOnly;
+    }
+
+    public void setIsUpdatingNoteOnly(boolean isUpdatingNoteOnly) {
+        this.isUpdatingNoteOnly = isUpdatingNoteOnly;
     }
 }
 

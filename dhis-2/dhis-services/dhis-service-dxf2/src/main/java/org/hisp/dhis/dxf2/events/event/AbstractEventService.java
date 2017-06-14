@@ -855,6 +855,8 @@ public abstract class AbstractEventService
             programStageInstance.setStatus( EventStatus.VERIFIED);
         } else if(event.getStatus() == EventStatus.LOCKED){
             programStageInstance.setStatus( EventStatus.LOCKED);
+        }else if(event.getStatus() == EventStatus.QUERIED){
+            programStageInstance.setStatus( EventStatus.QUERIED);
         }
 
         programStageInstance.setDueDate( dueDate );
@@ -921,11 +923,24 @@ public abstract class AbstractEventService
                 if ( StringUtils.isEmpty( value.getValue() ) && dataElement.isFileType()
                     && !StringUtils.isEmpty( dataValue.getValue() ) )
                 {
-                    fileResourceService.deleteFileResource( dataValue.getValue() );
+                    fileResourceService.deleteFileResource(dataValue.getValue());
                 }
 
-                dataValue.setValue(value.getValue());
 
+                if(value.getNotes() != null
+                        && value.getNotes().size() >0){
+                    dataValue.setIsUpdatingNoteOnly(true);
+                    //also update programstageinstance status to QUERIED.
+                    if(programStageInstance.isAllowUpdatingToQueried()
+                            && programStageInstance.getStatus() == EventStatus.QUERIED){
+                        programStageInstance.setStatus(EventStatus.QUERIED);
+                        programStageInstanceService.updateProgramStageInstance( programStageInstance );
+                    }
+                }else{
+                    if(value.getValue() != null) {
+                        dataValue.setValue(value.getValue());
+                    }
+                }
                 List<TrackedEntityComment> comments = dataValue.getComments();
                 if(comments == null){
                     comments = new ArrayList<TrackedEntityComment>();
@@ -946,7 +961,10 @@ public abstract class AbstractEventService
 
                 dataValues.remove( dataValue );
             }
-            else
+            else if (dataValue == null && (value.getNotes() != null && value.getNotes().size() >0) ){
+                // currently do not allow comment on data element that is not entered yet.
+
+            }else
             {
                 TrackedEntityDataValue existingDataValue = existingDataValues.get( value.getDataElement() );
 

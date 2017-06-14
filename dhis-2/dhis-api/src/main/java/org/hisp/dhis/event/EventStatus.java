@@ -44,7 +44,8 @@ public enum EventStatus
     OVERDUE( 4 ),
     SKIPPED( 5 ),
     VERIFIED( 6 ),
-    LOCKED( 7 );
+    LOCKED( 7 ),
+    QUERIED(8);
 
     private final int value;
 

@@ -264,4 +264,15 @@ public class ProgramStageInstance
     {
         this.deleted = deleted;
     }
+    /*
+        special method to check if a programstage instance can be updated or not.
+         DO NOT update if status is LOCKED
+     */
+    public boolean isAllowUpdatingToQueried(){
+        boolean result = true;
+        if(this.status == EventStatus.LOCKED){
+            result = false;
+        }
+        return result;
+    }
 }
