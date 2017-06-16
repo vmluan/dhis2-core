@@ -73,5 +73,12 @@
       <result name="input" type="velocity">/dhis-web-dataentry/validationResult.vm</result>
     </action>
 
+    <!-- Luan test to add more authorizations -->
+    <action name="verifyEvent" class="org.hisp.dhis.commons.action.NoAction">
+      <param name="requiredAuthorities">F_VERIFY_EVENT</param>
+    </action>
+    <action name="lockEvent" class="org.hisp.dhis.commons.action.NoAction">
+      <param name="requiredAuthorities">F_LOCK_EVENT</param>
+    </action>
   </package>
 </struts>

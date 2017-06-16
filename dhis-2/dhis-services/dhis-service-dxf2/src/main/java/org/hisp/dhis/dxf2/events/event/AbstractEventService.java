@@ -932,7 +932,7 @@ public abstract class AbstractEventService
                     dataValue.setIsUpdatingNoteOnly(true);
                     //also update programstageinstance status to QUERIED.
                     if(programStageInstance.isAllowUpdatingToQueried()
-                            && programStageInstance.getStatus() == EventStatus.QUERIED){
+                            && programStageInstance.getStatus() != EventStatus.QUERIED){
                         programStageInstance.setStatus(EventStatus.QUERIED);
                         programStageInstanceService.updateProgramStageInstance( programStageInstance );
                     }
