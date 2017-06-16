@@ -295,7 +295,7 @@ public class JdbcEventStore
                 + " where dataelementid =  " + dataElementid
                 + " and programstageinstanceid = " + programStageInstanceId + ") dv "
                 + " inner join trackedentitycomment co "
-                + " on dv.trackedentitycommentid = co.trackedentitycommentid; "
+                + " on dv.trackedentitycommentid = co.trackedentitycommentid "
                 + " where co.replyto is null or co.replyto =0";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet( sql );
         List<Note> notes = new ArrayList<Note>();
