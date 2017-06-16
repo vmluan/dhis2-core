@@ -71,10 +71,10 @@
                 <!--  Cache cleaner -->
                 <artifactItem>
                   <groupId>org.hisp.dhis</groupId>
-                  <artifactId>dhis-app-cache-cleaner</artifactId>
-                  <version>2.26-SNAPSHOT</version>
+                  <artifactId>cache-cleaner</artifactId>
+                  <version>2.56-SNAPSHOT</version>
                   <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/${project.artifactId}/dhis-web-cache-cleaner</outputDirectory>
+                  <outputDirectory>${project.build.directory}/${project.artifactId}/cache-cleaner</outputDirectory>
                   <includes>**/*.*</includes>
                 </artifactItem>
                 <!--  User profile -->

@@ -46,9 +46,9 @@
               <goal>validate</goal>
             </goals>
             <configuration>
-              <propertyDir>${project.basedir}/dhis-web/dhis-web-apps/src/main/webapp/dhis-web-cache-cleaner/</propertyDir>
+              <propertyDir>${project.basedir}/dhis-web/dhis-web-apps/src/main/webapp/cache-cleaner/</propertyDir>
               <ignoreFailure>true</ignoreFailure>
-              <reportsDir>${project.build.directory}/l10n-reports/dhis-web-cache-cleaner</reportsDir>
+              <reportsDir>${project.build.directory}/l10n-reports/cache-cleaner</reportsDir>
               <formatter>messageFormat</formatter>
             </configuration>
           </execution>
