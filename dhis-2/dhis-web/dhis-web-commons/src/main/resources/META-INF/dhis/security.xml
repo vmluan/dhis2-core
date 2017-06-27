@@ -32,10 +32,10 @@
     <sec:http-basic />
     <sec:anonymous />
 
-    <sec:form-login authentication-failure-url="/dhis-web-commons/security/login.action?failed=true"
+    <sec:form-login authentication-failure-url="/web-commons/security/login.action?failed=true"
       username-parameter="j_username" password-parameter="j_password"
-      login-page="/dhis-web-commons/security/login.action"
-      login-processing-url="/dhis-web-commons-security/login.action" />
+      login-page="/web-commons/security/login.action"
+      login-processing-url="/web-commons-security/login.action" />
     <sec:csrf disabled="true" />
   </sec:http>
 
@@ -115,7 +115,7 @@
       username-parameter="j_username" password-parameter="j_password"
       authentication-failure-handler-ref="securityExceptionTranslationHandler"
       login-processing-url="/dhis-web-commons-security/login.action"
-      login-page="/dhis-web-commons/security/login.action"
+      login-page="/web-commons/security/login.action"
       authentication-success-handler-ref="defaultAuthenticationSuccessHandler" />
 
     <sec:headers>
@@ -131,7 +131,8 @@
     <sec:logout logout-url="/dhis-web-commons-security/logout.action" logout-success-url="/" />
     <sec:intercept-url pattern="/dhis-web-commons/i18nJavaScript.action" access="permitAll()" />
     <sec:intercept-url pattern="/dhis-web-commons/security/**" access="permitAll()" />
-
+    <sec:intercept-url pattern="/web-commons/i18nJavaScript.action" access="permitAll()" />
+    <sec:intercept-url pattern="/web-commons/security/**" access="permitAll()" />
     <!-- Account recovery -->
 
     <sec:intercept-url pattern="/api/account/username" access="permitAll()" />
@@ -171,10 +172,10 @@
     class="org.hisp.dhis.security.CustomExceptionMappingAuthenticationFailureHandler">
     <property name="exceptionMappings">
       <props>
-        <prop key="org.springframework.security.authentication.CredentialsExpiredException">/dhis-web-commons/security/expired.action</prop>
+        <prop key="org.springframework.security.authentication.CredentialsExpiredException">/web-commons/security/expired.action</prop>
       </props>
     </property>
-    <property name="defaultFailureUrl" value="/dhis-web-commons/security/login.action?failed=true" />
+    <property name="defaultFailureUrl" value="/web-commons/security/login.action?failed=true" />
   </bean>
 
   <!-- Security : Action -->

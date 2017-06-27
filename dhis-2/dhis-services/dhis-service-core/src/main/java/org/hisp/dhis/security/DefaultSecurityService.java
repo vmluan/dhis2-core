@@ -72,7 +72,7 @@ public class DefaultSecurityService
 {
     private static final Log log = LogFactory.getLog( DefaultSecurityService.class );
 
-    private static final String RESTORE_PATH = "/dhis-web-commons/security/";
+    private static final String RESTORE_PATH = "/web-commons/security/";
     private static final Pattern INVITE_USERNAME_PATTERN = Pattern.compile( "^invite\\-(.+?)\\-(\\w{11})$" );
 
     private static final String DEFAULT_APPLICATION_TITLE = "DHIS 2";

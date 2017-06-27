@@ -1027,14 +1027,14 @@
                     defaultAction: "../dhis-web-commons-security/logout.action",
                     icon: "../icons/function-log-out.png",
                     description: ""
-                },
+                }/*,
                 {
                     name: "about_dhis2",
                     namespace: "/dhis-web-commons-about",
                     defaultAction: "../dhis-web-commons-about/about.action",
                     icon: "../icons/function-about-dhis2.png",
                     description: ""
-                }
+                }*/
             ],
             {
                 icon: "user",

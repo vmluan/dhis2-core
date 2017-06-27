@@ -25,6 +25,31 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+      <!-- Luan added to clone dhis-web-commons directory -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/${artifactId}-${parent.version}/web-commons</outputDirectory>
+              <!--outputDirectory>${project.build.directory}/${project.artifactId}/dhis-web-event-reports</outputDirectory-->
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/${artifactId}-${parent.version}/dhis-web-commons</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 </project>
