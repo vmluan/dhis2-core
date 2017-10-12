@@ -44,6 +44,7 @@ import org.hisp.dhis.common.QueryItem;
 import org.hisp.dhis.event.EventStatus;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.program.Program;
+import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStatus;
 import org.hisp.dhis.user.User;
 
@@ -198,6 +199,11 @@ public class TrackedEntityInstanceQueryParams
      * Current user for query.
      */
     private transient User user;
+
+    /**
+     * Program Stage
+     */
+    private ProgramStage programStage;
     
     // -------------------------------------------------------------------------
     // Constructors
@@ -871,5 +877,13 @@ public class TrackedEntityInstanceQueryParams
     public void setOrders( List<String> orders )
     {
         this.orders = orders;
-    }    
+    }
+
+    public ProgramStage getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(ProgramStage programStage) {
+        this.programStage = programStage;
+    }
 }

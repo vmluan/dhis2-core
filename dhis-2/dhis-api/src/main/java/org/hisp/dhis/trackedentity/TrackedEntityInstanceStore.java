@@ -68,4 +68,6 @@ public interface TrackedEntityInstanceStore
      * @return true/false depending on result
      */
     boolean exists( String uid );
+
+    List<Map<String, String>> getTrackedEntityInstancesGridOfStage( TrackedEntityInstanceQueryParams params );
 }

@@ -484,6 +484,29 @@ public class DefaultTrackedEntityInstanceService
             .setSkipPaging( skipPaging )
             .setOrders( orders );
 
+        params.setProgramStage(null); //Luan add
+
+        return params;
+    }
+
+    @Override
+    public TrackedEntityInstanceQueryParams getFromUrl( String query, Set<String> attribute, Set<String> filter,
+                                                        Set<String> ou, OrganisationUnitSelectionMode ouMode
+                        , String program, ProgramStatus programStatus,
+                         Boolean followUp, Date programEnrollmentStartDate
+                        , Date programEnrollmentEndDate, Date programIncidentStartDate
+                        , Date programIncidentEndDate, String trackedEntity, EventStatus eventStatus,
+                                                        Date eventStartDate, Date eventEndDate, boolean skipMeta
+                            , Integer page, Integer pageSize
+                            , boolean totalPages, boolean skipPaging, List<String> orders
+                                                        ,ProgramStage programStage)
+    {
+        TrackedEntityInstanceQueryParams params = this.getFromUrl(query,attribute,filter,ou,ouMode
+                ,program,programStatus, followUp,programEnrollmentStartDate, programEnrollmentEndDate,
+                programIncidentStartDate,programIncidentEndDate, trackedEntity, eventStatus,
+                eventStartDate, eventEndDate, skipMeta, page, pageSize, totalPages, skipPaging, orders);
+
+        params.setProgramStage(programStage);
         return params;
     }
 
@@ -494,7 +517,7 @@ public class DefaultTrackedEntityInstanceService
      */
     private QueryItem getQueryItem( String item )
     {
-        String[] split = item.split( DimensionalObject.DIMENSION_NAME_SEP );
+        String[] split = item.split(DimensionalObject.DIMENSION_NAME_SEP);
 
         if ( split == null || (split.length % 2 != 1) )
         {
@@ -517,7 +540,7 @@ public class DefaultTrackedEntityInstanceService
 
     private QueryItem getItem( String item )
     {
-        TrackedEntityAttribute at = attributeService.getTrackedEntityAttribute( item );
+        TrackedEntityAttribute at = attributeService.getTrackedEntityAttribute(item);
 
         if ( at == null )
         {
@@ -613,14 +636,14 @@ public class DefaultTrackedEntityInstanceService
     @Override
     public void updateTrackedEntityInstance( TrackedEntityInstance instance )
     {
-        trackedEntityInstanceStore.update( instance );
+        trackedEntityInstanceStore.update(instance);
     }
 
     @Override
     public void deleteTrackedEntityInstance( TrackedEntityInstance instance )
     {
         attributeValueAuditService.deleteTrackedEntityAttributeValueAudits( instance );
-        trackedEntityInstanceStore.delete( instance );
+        trackedEntityInstanceStore.delete(instance);
     }
 
     @Override
@@ -632,13 +655,13 @@ public class DefaultTrackedEntityInstanceService
     @Override
     public TrackedEntityInstance getTrackedEntityInstance( String uid )
     {
-        return trackedEntityInstanceStore.getByUid( uid );
+        return trackedEntityInstanceStore.getByUid(uid);
     }
 
     @Override
     public boolean trackedEntityInstanceExists( String uid )
     {
-        return trackedEntityInstanceStore.exists( uid );
+        return trackedEntityInstanceStore.exists(uid);
     }
 
     @Override
@@ -770,5 +793,100 @@ public class DefaultTrackedEntityInstanceService
         // Return null if all criteria are met
 
         return null;
+    }
+
+    // Luan
+    @Override
+    public Grid getTrackedEntityInstancesGridOfStage( TrackedEntityInstanceQueryParams params )
+    {
+        decideAccess( params );
+        validate( params );
+        handleAttributes( params );
+
+        params.setUser( currentUserService.getCurrentUser() );
+
+        // ---------------------------------------------------------------------
+        // Conform parameters
+        // ---------------------------------------------------------------------
+
+        params.conform();
+
+        // ---------------------------------------------------------------------
+        // Grid headers
+        // ---------------------------------------------------------------------
+
+        Grid grid = new ListGrid();
+
+        grid.addHeader( new GridHeader( TRACKED_ENTITY_INSTANCE_ID, "Instance" ) );
+        grid.addHeader( new GridHeader( CREATED_ID, "Created" ) );
+        grid.addHeader( new GridHeader( LAST_UPDATED_ID, "Last updated" ) );
+        grid.addHeader( new GridHeader( ORG_UNIT_ID, "Organisation unit" ) );
+        grid.addHeader( new GridHeader( ORG_UNIT_NAME, "Organisation unit name" ) );
+        grid.addHeader( new GridHeader( TRACKED_ENTITY_ID, "Tracked entity" ) );
+        grid.addHeader( new GridHeader( INACTIVE_ID, "Inactive" ) );
+
+        for ( QueryItem item : params.getAttributes() )
+        {
+            grid.addHeader( new GridHeader( item.getItem().getUid(), item.getItem().getName() ) );
+        }
+        List<Map<String, String>> entities = trackedEntityInstanceStore.getTrackedEntityInstancesGridOfStage( params );
+
+        // ---------------------------------------------------------------------
+        // Grid rows
+        // ---------------------------------------------------------------------
+
+        Set<String> tes = new HashSet<>();
+
+        for ( Map<String, String> entity : entities )
+        {
+            grid.addRow();
+            grid.addValue( entity.get( TRACKED_ENTITY_INSTANCE_ID ) );
+            grid.addValue( entity.get( CREATED_ID ) );
+            grid.addValue( entity.get( LAST_UPDATED_ID ) );
+            grid.addValue( entity.get( ORG_UNIT_ID ) );
+            grid.addValue( entity.get( ORG_UNIT_NAME ) );
+            grid.addValue( entity.get( TRACKED_ENTITY_ID ) );
+            grid.addValue( entity.get( INACTIVE_ID ) );
+
+            tes.add( entity.get( TRACKED_ENTITY_ID ) );
+
+            for ( QueryItem item : params.getAttributes() )
+            {
+                grid.addValue( entity.get( item.getItemId() ) );
+            }
+
+        }
+
+        Map<String, Object> metaData = new HashMap<>();
+
+        if ( params.isPaging() )
+        {
+            int count = 0;
+
+            if ( params.isTotalPages() )
+            {
+                count = trackedEntityInstanceStore.getTrackedEntityInstanceCount( params );
+            }
+
+            Pager pager = new Pager( params.getPageWithDefault(), count, params.getPageSizeWithDefault() );
+            metaData.put( PAGER_META_KEY, pager );
+        }
+
+        if ( !params.isSkipMeta() )
+        {
+            Map<String, String> names = new HashMap<>();
+
+            for ( String te : tes )
+            {
+                TrackedEntity entity = trackedEntityService.getTrackedEntity( te );
+                names.put( te, entity != null ? entity.getDisplayName() : null );
+            }
+
+            metaData.put( META_DATA_NAMES_KEY, names );
+        }
+
+        grid.setMetaData( metaData );
+
+        return grid;
     }
 }

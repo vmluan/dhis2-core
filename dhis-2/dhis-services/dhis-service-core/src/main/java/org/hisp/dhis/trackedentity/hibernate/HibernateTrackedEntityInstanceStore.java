@@ -834,7 +834,267 @@ public class HibernateTrackedEntityInstanceStore
     @Override
     public boolean exists( String uid )
     {
-        Integer result = jdbcTemplate.queryForObject( "select count(*) from trackedentityinstance where uid=?", Integer.class, uid );
+        Integer result = jdbcTemplate.queryForObject("select count(*) from trackedentityinstance where uid=?", Integer.class, uid);
         return result != null && result > 0;
+    }
+
+    // Luan update
+    @Override
+    public List<Map<String, String>> getTrackedEntityInstancesGridOfStage( TrackedEntityInstanceQueryParams params )
+    {
+        SqlHelper hlp = new SqlHelper();
+
+        // ---------------------------------------------------------------------
+        // Select clause
+        // ---------------------------------------------------------------------
+
+        String sql =
+                "select distinct tei.uid as " + TRACKED_ENTITY_INSTANCE_ID + ", " +
+                        "tei.created as " + CREATED_ID + ", " +
+                        "tei.lastupdated as " + LAST_UPDATED_ID + ", " +
+                        "ou.uid as " + ORG_UNIT_ID + ", " +
+                        "ou.name as " + ORG_UNIT_NAME + ", " +
+                        "te.uid as " + TRACKED_ENTITY_ID + ", " +
+                        "tei.inactive as " + INACTIVE_ID + ", ";
+        sql += "psi.status as " + PROGRAM_STAGE_STATUS + ", ";
+        sql += "psi.uid as " + PROGRAM_STAGE_UID + ", ";
+        sql += "pi.status as " + "programinstancestatus" + ", ";
+        sql +="ps.sort_order, ";
+        //    sql += "ps.name as " + PROGRAM_STAGE_NAME + ", ";
+
+        for ( QueryItem item : params.getAttributes() )
+        {
+            String col = statementBuilder.columnQuote( item.getItemId() );
+
+            sql += item.isNumeric() ? "CAST( " + col + ".value AS NUMERIC ) as " : col + ".value as ";
+
+            sql += col + ", ";
+        }
+
+        sql = removeLastComma( sql ) + " ";
+
+        // ---------------------------------------------------------------------
+        // From and where clause
+        // ---------------------------------------------------------------------
+
+        // sql += getFromWhereClause( params, hlp );
+        //Luan update
+        sql += getFromWhereClauseForStagesOnly(params, hlp);
+
+        // ---------------------------------------------------------------------
+        // Order clause
+        // ---------------------------------------------------------------------
+
+        sql += getOrderClause( params );
+        String stageOrder = " ,ps.sort_order asc";
+        sql += stageOrder;
+
+        int limitNbr = params.getPageSizeWithDefault();
+        int offsetNbr = params.getOffset();
+        // ---------------------------------------------------------------------
+        // Paging clause
+        // ---------------------------------------------------------------------
+
+        if ( params.isPaging() )
+        {
+            sql += " limit " + limitNbr + " offset " + offsetNbr;
+        }
+
+        // ---------------------------------------------------------------------
+        // Query
+        // ---------------------------------------------------------------------
+
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet( sql );
+
+        log.debug( "Tracked entity instance query SQL: " + sql );
+
+        List<Map<String, String>> list = new ArrayList<>();
+        TreeMap<String,String> treeMap = new TreeMap<String,String>();
+
+
+        while ( rowSet.next() )
+        {
+            String trackedEntityId = rowSet.getString( TRACKED_ENTITY_ID);
+            String trackedEntityInstanceId = rowSet.getString( TRACKED_ENTITY_INSTANCE_ID);
+            String stageId = rowSet.getString( PROGRAM_STAGE_UID);
+            String stageStatus = rowSet.getString( PROGRAM_STAGE_STATUS);
+            String programInstanceStatus = rowSet.getString( "programinstancestatus");
+            // String stageName = rowSet.getString( PROGRAM_STAGE_NAME);
+            //String output = stageId + ":" + stageStatus + ":" + stageName;
+            String output = stageId + ":" + stageStatus;
+            final Map<String, String> map = new HashMap<>();
+            map.put( TRACKED_ENTITY_INSTANCE_ID, trackedEntityInstanceId );
+            map.put( CREATED_ID, rowSet.getString( CREATED_ID ) );
+            map.put( LAST_UPDATED_ID, rowSet.getString( LAST_UPDATED_ID ) );
+            map.put( ORG_UNIT_ID, rowSet.getString( ORG_UNIT_ID ) );
+            map.put( ORG_UNIT_NAME, rowSet.getString( ORG_UNIT_NAME ) );
+            map.put( TRACKED_ENTITY_ID, trackedEntityId);
+            map.put(INACTIVE_ID, rowSet.getString( INACTIVE_ID ) );
+
+            for ( QueryItem item : params.getAttributes() )
+            {
+                map.put( item.getItemId(), rowSet.getString( item.getItemId() ) );
+            }
+            list.add( map );
+        }
+
+        return list;
+    }
+    //Luan
+    /*
+    This method is to build where clause in case searching trackedentityinstance based on programStage.
+     */
+    private String getFromWhereClauseForStagesOnly( TrackedEntityInstanceQueryParams params, SqlHelper hlp )
+    {
+        final String regexp = statementBuilder.getRegexpMatch();
+        final String wordStart = statementBuilder.getRegexpWordStart();
+        final String wordEnd = statementBuilder.getRegexpWordEnd();
+        final String anyChar = "\\.*?";
+
+        String sql = "from trackedentityinstance tei "
+                + "inner join trackedentity te on tei.trackedentityid = te.trackedentityid "
+                + "inner join organisationunit ou on tei.organisationunitid = ou.organisationunitid ";
+        sql += "inner join programinstance pi on tei.trackedentityinstanceid=pi.trackedentityinstanceid ";
+        sql += "inner join programstageinstance psi on pi.programinstanceid=psi.programinstanceid ";
+        sql += " AND psi.status = " + params.getEventStatus().toString() + " ";
+        sql += "inner join programstage ps on psi.programstageid=ps.programstageid ";
+        sql += " AND ps.uid = " + params.getProgramStage().getUid() + " ";
+
+
+        for ( QueryItem item : params.getAttributesAndFilters() )
+        {
+            final String col = statementBuilder.columnQuote( item.getItemId() );
+
+            final String joinClause = item.hasFilter() ? "inner join" : "left join";
+
+            sql += joinClause + " " + "trackedentityattributevalue as " + col + " " + "on " + col
+                    + ".trackedentityinstanceid = tei.trackedentityinstanceid " + "and " + col
+                    + ".trackedentityattributeid = " + item.getItem().getId() + " ";
+
+            if ( !params.isOrQuery() && item.hasFilter() )
+            {
+                for ( QueryFilter filter : item.getFilters() )
+                {
+                    final String encodedFilter = statementBuilder.encode( filter.getFilter(), false );
+
+                    final String queryCol = item.isNumeric() ? (col + ".value") : "lower(" + col + ".value)";
+
+                    sql += "and " + queryCol + " " + filter.getSqlOperator() + " "
+                            + StringUtils.lowerCase( filter.getSqlFilter( encodedFilter ) ) + " ";
+                }
+            }
+        }
+
+        if ( params.hasTrackedEntity() )
+        {
+            sql += hlp.whereAnd() + " tei.trackedentityid = " + params.getTrackedEntity().getId() + " ";
+        }
+
+        params.handleOrganisationUnits();
+
+        if ( params.isOrganisationUnitMode( OrganisationUnitSelectionMode.ALL ) )
+        {
+            // No restriction
+        }
+        else if ( params.isOrganisationUnitMode( OrganisationUnitSelectionMode.DESCENDANTS ) )
+        {
+            String ouClause = " (";
+
+            SqlHelper orHlp = new SqlHelper( true );
+
+            for ( OrganisationUnit organisationUnit : params.getOrganisationUnits() )
+            {
+                ouClause += orHlp.or() + "ou.path like '" + organisationUnit.getPath() + "%'";
+            }
+
+            ouClause += ")";
+
+            sql += hlp.whereAnd() + ouClause;
+        }
+        else // SELECTED (default)
+        {
+            sql += hlp.whereAnd() + " tei.organisationunitid in ("
+                    + getCommaDelimitedString( getIdentifiers( params.getOrganisationUnits() ) ) + ") ";
+        }
+
+        if ( params.hasProgram() )
+        {
+            sql += hlp.whereAnd() + " exists (" + "select pi.trackedentityinstanceid " + "from programinstance pi ";
+
+            if ( params.hasEventStatus() )
+            {
+                sql += "left join programstageinstance psi " + "on pi.programinstanceid = psi.programinstanceid and psi.deleted is false ";
+            }
+
+            sql += "where pi.trackedentityinstanceid = tei.trackedentityinstanceid " + "and pi.programid = "
+                    + params.getProgram().getId() + " ";
+
+            if ( params.hasProgramStatus() )
+            {
+                sql += "and pi.status = '" + params.getProgramStatus() + "' ";
+            }
+
+            if ( params.hasFollowUp() )
+            {
+                sql += "and pi.followup = " + params.getFollowUp() + " ";
+            }
+
+            if ( params.hasProgramEnrollmentStartDate() )
+            {
+                sql += "and pi.enrollmentdate >= '" + getMediumDateString( params.getProgramEnrollmentStartDate() ) + "' ";
+            }
+
+            if ( params.hasProgramEnrollmentEndDate() )
+            {
+                sql += "and pi.enrollmentdate <= '" + getMediumDateString( params.getProgramEnrollmentEndDate() ) + "' ";
+            }
+
+            if ( params.hasProgramIncidentStartDate() )
+            {
+                sql += "and pi.incidentdate >= '" + getMediumDateString( params.getProgramIncidentStartDate() ) + "' ";
+            }
+
+            if ( params.hasProgramIncidentEndDate() )
+            {
+                sql += "and pi.incidentdate <= '" + getMediumDateString( params.getProgramIncidentEndDate() ) + "' ";
+            }
+
+            if ( params.hasEventStatus() )
+            {
+                sql += getEventStatusWhereClause( params );
+            }
+
+            sql += ") ";
+        }
+
+        if ( params.isOrQuery() && params.hasAttributesOrFilters() )
+        {
+            final String start = params.getQuery().isOperator( QueryOperator.LIKE ) ? anyChar : wordStart;
+            final String end = params.getQuery().isOperator( QueryOperator.LIKE ) ? anyChar : wordEnd;
+
+            sql += hlp.whereAnd() + " (";
+
+            List<String> queryTokens = getTokens( params.getQuery().getFilter() );
+
+            for ( String queryToken : queryTokens )
+            {
+                final String query = statementBuilder.encode( queryToken, false );
+
+                sql += "(";
+
+                for ( QueryItem item : params.getAttributesAndFilters() )
+                {
+                    final String col = statementBuilder.columnQuote( item.getItemId() );
+
+                    sql += col + ".value " + regexp + " '" + start + StringUtils.lowerCase( query ) + end + "' or ";
+                }
+
+                sql = removeLastOr( sql ) + ") and ";
+            }
+
+            sql = removeLastAnd( sql ) + ") ";
+        }
+
+        return sql;
     }
 }

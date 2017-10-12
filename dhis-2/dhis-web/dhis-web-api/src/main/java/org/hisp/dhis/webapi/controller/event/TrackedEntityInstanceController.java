@@ -256,6 +256,7 @@ public class TrackedEntityInstanceController
         @RequestParam( required = false ) boolean totalPages,
         @RequestParam( required = false ) boolean skipPaging,
         @RequestParam( required = false ) String order,
+        @RequestParam( required = false ) String programStage,
         Model model,
         HttpServletResponse response ) throws Exception
     {
@@ -265,6 +266,7 @@ public class TrackedEntityInstanceController
         TrackedEntityInstanceQueryParams params = instanceService.getFromUrl( query, attribute, filter, orgUnits, ouMode,
             program, programStatus, followUp, programEnrollmentStartDate, programEnrollmentEndDate, programIncidentStartDate, programIncidentEndDate, trackedEntity,
             eventStatus, eventStartDate, eventEndDate, skipMeta, page, pageSize, totalPages, skipPaging, getOrderParams( order ) );
+        params.setProgramStage(programStage); // Luan add
 
         contextUtils.configureResponse( response, ContextUtils.CONTENT_TYPE_JSON, CacheStrategy.NO_CACHE );
         return instanceService.getTrackedEntityInstancesGrid( params );
@@ -573,6 +575,49 @@ public class TrackedEntityInstanceController
             return Arrays.asList( order.split( "," ) );
         }
 
-        return null;
+        returna anull;
+    }
+
+//Luan
+    @RequestMapping( value = "/query2", method = RequestMethod.GET, produces = { ContextUtils.CONTENT_TYPE_JSON, ContextUtils.CONTENT_TYPE_JAVASCRIPT } )
+    public @ResponseBody Grid queryTrackedEntityInstancesJson2(
+            @RequestParam( required = false ) String query,
+            @RequestParam( required = false ) Set<String> attribute,
+            @RequestParam( required = false ) Set<String> filter,
+            @RequestParam( required = false ) String ou,
+            @RequestParam( required = false ) OrganisationUnitSelectionMode ouMode,
+            @RequestParam( required = false ) String program,
+            @RequestParam( required = false ) ProgramStatus programStatus,
+            @RequestParam( required = false ) Boolean followUp,
+            @RequestParam( required = false ) Date programStartDate,
+            @RequestParam( required = false ) Date programEnrollmentStartDate,
+            @RequestParam( required = false ) Date programEndDate,
+            @RequestParam( required = false ) Date programEnrollmentEndDate,
+            @RequestParam( required = false ) Date programIncidentStartDate,
+            @RequestParam( required = false ) Date programIncidentEndDate,
+            @RequestParam( required = false ) String trackedEntity,
+            @RequestParam( required = false ) EventStatus eventStatus,
+            @RequestParam( required = false ) Date eventStartDate,
+            @RequestParam( required = false ) Date eventEndDate,
+            @RequestParam( required = false ) boolean skipMeta,
+            @RequestParam( required = false ) Integer page,
+            @RequestParam( required = false ) Integer pageSize,
+            @RequestParam( required = false ) boolean totalPages,
+            @RequestParam( required = false ) boolean skipPaging,
+            @RequestParam( required = false ) String order,
+            @RequestParam( required = false ) String programStage,
+            Model model,
+            HttpServletResponse response ) throws Exception
+    {
+        programEnrollmentStartDate = ObjectUtils.firstNonNull( programEnrollmentStartDate, programStartDate );
+        programEnrollmentEndDate = ObjectUtils.firstNonNull( programEnrollmentEndDate, programEndDate );
+        Set<String> orgUnits = TextUtils.splitToArray( ou, TextUtils.SEMICOLON );
+        TrackedEntityInstanceQueryParams params = instanceService.getFromUrl( query, attribute, filter, orgUnits, ouMode,
+                program, programStatus, followUp, programEnrollmentStartDate, programEnrollmentEndDate, programIncidentStartDate, programIncidentEndDate, trackedEntity,
+                eventStatus, eventStartDate, eventEndDate, skipMeta, page, pageSize, totalPages, skipPaging, getOrderParams( order ) );
+        params.setProgramStage(programStage); // Luan add
+
+        contextUtils.configureResponse( response, ContextUtils.CONTENT_TYPE_JSON, CacheStrategy.NO_CACHE );
+        return instanceService.getTrackedEntityInstancesGridOfStage(params );
     }
 }
